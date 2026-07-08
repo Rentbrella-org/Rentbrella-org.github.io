@@ -1,0 +1,47 @@
+{% assign data = site.data.cross-compat %}
+
+{% if data.recommended_pairs.size > 0 %}
+<section class="recommended-pairs">
+  <h3>Pares recomendados para novas instalações</h3>
+  <ul>
+    {% for pair in data.recommended_pairs %}
+    <li>
+      <strong>Main v{{ pair.main }}</strong> + <strong>IHM v{{ pair.ihm }}</strong>
+      {% if pair.note %} — {{ pair.note }}{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<div class="table-wrapper">
+  <table class="dashboard-table cross-compat-table">
+    <thead>
+      <tr>
+        <th>IHM</th>
+        <th>Main mínimo</th>
+        <th>Main máximo</th>
+        <th>Status</th>
+        <th>Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rule in data.rules %}
+      <tr class="compat-status compat-{{ rule.status }}">
+        <td>{{ rule.ihm }}</td>
+        <td>{% if rule.main_min %}{{ rule.main_min }}{% else %}—{% endif %}</td>
+        <td>{% if rule.main_max %}{{ rule.main_max }}{% else %}—{% endif %}</td>
+        <td>
+          {% case rule.status %}
+          {% when 'ok' %}<span class="compat-badge compat-ok">✅ OK</span>
+          {% when 'warning' %}<span class="compat-badge compat-warning">⚠️ Atenção</span>
+          {% when 'incompatible' %}<span class="compat-badge compat-incompatible">❌ Incompatível</span>
+          {% else %}<span class="compat-badge">{{ rule.status }}</span>
+          {% endcase %}
+        </td>
+        <td>{{ rule.note }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

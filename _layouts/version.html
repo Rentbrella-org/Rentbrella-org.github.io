@@ -1,0 +1,132 @@
+---
+layout: default
+---
+{% assign short = page.should_update_short | downcase %}
+<section class="update-banner update-banner--{{ short }}">
+  <p class="update-banner__question">Devo atualizar?</p>
+  <p class="update-banner__answer">{{ page.should_update_short }}</p>
+  <p class="update-banner__detail">{{ page.should_update }}</p>
+</section>
+
+<header class="version-header">
+  <h1>{{ page.product_name }} — v{{ page.version }}</h1>
+  <div class="version-meta">
+    {% include status-badge.html status=page.status %}
+    {% include impact-badge.html impact=page.impact %}
+    <span class="meta-item">Lançamento: {{ page.released_at | date: "%d/%m/%Y" }}</span>
+    {% if page.replaces %}
+    <span class="meta-item">Substitui: v{{ page.replaces }}</span>
+    {% endif %}
+    {% if page.deploy %}
+    <span class="meta-item">
+      Deploy:
+      {% if page.test_only %}Teste{% else %}{{ page.deploy | capitalize }}{% endif %}
+    </span>
+    {% endif %}
+  </div>
+</header>
+
+<section class="version-section">
+  <div class="two-col">
+    <div class="col">
+      <h2>Recomendada para</h2>
+      {% if page.recommended_for.size > 0 %}
+      <ul>
+        {% for item in page.recommended_for %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">Não especificado.</p>
+      {% endif %}
+    </div>
+    <div class="col">
+      <h2>Não é necessário atualizar</h2>
+      {% if page.not_required_for.size > 0 %}
+      <ul>
+        {% for item in page.not_required_for %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">Não especificado.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="version-section compat-flags">
+  <h2>Compatibilidade operacional</h2>
+  {% include compat-table.html
+    official_deploy=page.official_deploy
+    still_supported=page.still_supported
+    can_install=page.can_install
+    test_only=page.test_only
+  %}
+</section>
+
+{% if page.added.size > 0 or page.fixed.size > 0 or page.removed.size > 0 or page.breaking.size > 0 %}
+<section class="version-section">
+  {% if page.added.size > 0 %}
+  <h2>Novidades</h2>
+  <ul>
+    {% for item in page.added %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.fixed.size > 0 %}
+  <h2>Correções</h2>
+  <ul>
+    {% for item in page.fixed %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.removed.size > 0 %}
+  <h2>Removido</h2>
+  <ul>
+    {% for item in page.removed %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.breaking.size > 0 %}
+  <h2>Incompatibilidades</h2>
+  <ul class="breaking-list">
+    {% for item in page.breaking %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if page.known_issues.size > 0 %}
+<section class="version-section">
+  <h2>Bugs conhecidos</h2>
+  <ul class="known-issues-list">
+    {% for item in page.known_issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if content != "" %}
+<section class="version-section">
+  <h2>Notas operacionais</h2>
+  {{ content }}
+</section>
+{% endif %}
+
+<section class="version-section changelog-link">
+  <a href="{{ page.changelog_url }}" class="btn-secondary" target="_blank" rel="noopener">
+    Ver CHANGELOG técnico completo →
+  </a>
+</section>
+
+<p class="back-link"><a href="{% if page.product == 'rbx-01' %}{{ '/rbx-01/' | relative_url }}{% else %}{{ '/ihm/' | relative_url }}{% endif %}">← Voltar ao dashboard</a></p>

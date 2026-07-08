@@ -1,0 +1,33 @@
+# Compatibilidade cruzada Main (RBX-01) ↔ IHM
+# Edite este arquivo sempre que souber de uma combinação válida ou inválida.
+# Não precisa preencher tudo de uma vez — adicione regras conforme for usando.
+
+rules:
+  - ihm: "3.2.x"
+    main_min: "2.27.0"
+    main_max: null
+    status: ok
+    note: "Funciona normalmente. Requer Main com suporte ao Registration Flow."
+
+  - ihm: "3.1.x"
+    main_min: "2.25.0"
+    main_max: "2.27.x"
+    status: ok
+    note: "Compatível com versões estáveis em campo."
+
+  - ihm: "3.0.x"
+    main_min: "2.24.0"
+    main_max: null
+    status: warning
+    note: "IHM 3.0 mudou resolução (800×480). Verificar modelo de tela antes de instalar."
+
+  - ihm: "2.2.x"
+    main_min: null
+    main_max: "2.23.x"
+    status: incompatible
+    note: "Resolução 1024×768 — não combinar com Main recente."
+
+recommended_pairs:
+  - main: "2.27.7"
+    ihm: "3.2.1"
+    note: "Par recomendado atual para novas máquinas."

@@ -1,0 +1,184 @@
+---
+layout: default
+---
+<header class="page-header">
+  <h1>{{ page.title }}</h1>
+  {% if page.description %}
+  <p class="lead">{{ page.description }}</p>
+  {% endif %}
+</header>
+
+{% if page.product == 'rbx-01' %}
+  {% assign versions = site.rbx01_versions | sort: 'released_at' | reverse %}
+{% elsif page.product == 'ihm' %}
+  {% assign versions = site.ihm_versions | sort: 'released_at' | reverse %}
+{% else %}
+  {% assign versions = nil %}
+{% endif %}
+
+{% if page.recommended_version %}
+{% assign recommended = nil %}
+{% for v in versions %}
+  {% if v.version == page.recommended_version %}
+    {% assign recommended = v %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+<section class="recommended-banner">
+  <span class="recommended-label">Versão recomendada atual</span>
+  {% if recommended %}
+  <a class="recommended-version" href="{{ recommended.url | relative_url }}">v{{ page.recommended_version }}</a>
+  {% else %}
+  <span class="recommended-version">v{{ page.recommended_version }}</span>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if page.show_version_lookup %}
+{% if page.product == 'rbx-01' %}
+  {% assign lookup_collection = site.rbx01_versions %}
+{% else %}
+  {% assign lookup_collection = site.ihm_versions %}
+{% endif %}
+<section class="version-lookup">
+  <h2>Tenho uma versão instalada</h2>
+  <p>Digite a versão na máquina (ex.: 2.27.7) para abrir a página de política correspondente.</p>
+  <div class="lookup-form">
+    <input type="text" id="version-input" placeholder="Ex.: 2.27.7" aria-label="Versão instalada">
+    <button type="button" id="version-lookup-btn">Buscar</button>
+  </div>
+  <p id="version-lookup-result" class="lookup-result" hidden></p>
+  <script type="application/json" id="version-lookup-data">
+  {
+    {% for v in lookup_collection %}
+    "{{ v.version }}": "{{ v.url | relative_url }}"{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  }
+  </script>
+</section>
+<script>
+(function () {
+  var dataEl = document.getElementById('version-lookup-data');
+  var versions = dataEl ? JSON.parse(dataEl.textContent) : {};
+  var input = document.getElementById('version-input');
+  var btn = document.getElementById('version-lookup-btn');
+  var result = document.getElementById('version-lookup-result');
+  function normalize(v) { return (v || '').trim().replace(/^v/i, ''); }
+  function lookup() {
+    var key = normalize(input.value);
+    if (!key) {
+      result.hidden = false;
+      result.textContent = 'Informe uma versão.';
+      result.className = 'lookup-result lookup-result--warn';
+      return;
+    }
+    if (versions[key]) { window.location.href = versions[key]; return; }
+    result.hidden = false;
+    result.textContent = 'Versão não encontrada neste portal. Consulte a tabela ou a equipe de engenharia.';
+    result.className = 'lookup-result lookup-result--warn';
+  }
+  btn.addEventListener('click', lookup);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') lookup(); });
+})();
+</script>
+{% endif %}
+
+<section class="dashboard-section">
+  <h2>Todas as versões</h2>
+  <p class="dashboard-hint muted">Passe o mouse sobre uma versão para ver o resumo. Toque na linha (mobile) para expandir.</p>
+  <div class="table-wrapper">
+    <table class="dashboard-table dashboard-table--preview">
+      <thead>
+        <tr>
+          <th>Versão</th>
+          <th>Status</th>
+          <th>Impacto</th>
+        </tr>
+      </thead>
+      {% for v in versions %}
+      <tbody class="version-row-group">
+        <tr class="version-row status-row status-{{ v.status }}" tabindex="0" aria-expanded="false">
+          <td>
+            <a href="{{ v.url | relative_url }}" class="version-link">v{{ v.version }}</a>
+            <button type="button" class="preview-toggle" aria-label="Mostrar resumo da v{{ v.version }}" aria-expanded="false">
+              <span aria-hidden="true">ℹ</span>
+            </button>
+          </td>
+          <td>{% include status-badge.html status=v.status %}</td>
+          <td>{% include impact-badge.html impact=v.impact %}</td>
+        </tr>
+        <tr class="version-preview-row">
+          <td colspan="3">
+            <div class="version-preview-card">
+              <p class="version-preview-summary">{{ v.summary | default: v.should_update }}</p>
+              <p class="version-preview-date"><strong>Lançamento:</strong> {{ v.released_at | date: "%d/%m/%Y" }}</p>
+              <div class="version-preview-compat">
+                <strong>Compatibilidade cruzada</strong>
+                {% include compat-lookup.html page=v product=page.product %}
+              </div>
+              <a href="{{ v.url | relative_url }}" class="version-preview-link">Ver detalhes completos →</a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<script>
+(function () {
+  var rows = document.querySelectorAll('.version-row');
+  var touchMode = window.matchMedia('(hover: none)').matches;
+
+  function closeAll(except) {
+    rows.forEach(function (row) {
+      if (row === except) return;
+      var preview = row.nextElementSibling;
+      if (preview && preview.classList.contains('version-preview-row')) {
+        preview.classList.remove('is-expanded');
+        row.setAttribute('aria-expanded', 'false');
+        var btn = row.querySelector('.preview-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  function togglePreview(row) {
+    var preview = row.nextElementSibling;
+    if (!preview || !preview.classList.contains('version-preview-row')) return;
+    var open = !preview.classList.contains('is-expanded');
+    closeAll(open ? row : null);
+    preview.classList.toggle('is-expanded', open);
+    row.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var btn = row.querySelector('.preview-toggle');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  rows.forEach(function (row) {
+    var toggle = row.querySelector('.preview-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        togglePreview(row);
+      });
+    }
+    if (touchMode) {
+      row.addEventListener('click', function (e) {
+        if (e.target.closest('a.version-link')) return;
+        if (e.target.closest('.preview-toggle')) return;
+        togglePreview(row);
+      });
+    }
+    row.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.target.closest('a')) {
+        e.preventDefault();
+        togglePreview(row);
+      }
+    });
+  });
+})();
+</script>
+
+{{ content }}
