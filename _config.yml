@@ -1,0 +1,45 @@
+title: Portal de Política de Releases
+description: Consulta informativa das versões de firmware e suas funcionalidades — placa principal (fw-rb-main) e tela (IHM)
+url: "https://rentbrella-org.github.io"
+baseurl: ""
+lang: pt-BR
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md
+
+collections:
+  fw_rb_main_versions:
+    output: true
+    permalink: /fw-rb-main/versions/:name/
+  ihm_versions:
+    output: true
+    permalink: /ihm/versions/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: fw_rb_main_versions
+    values:
+      layout: version
+      product: fw_rb_main
+      product_name: "fw-rb-main — Placa principal"
+      changelog_url: "https://github.com/Rentbrella-org/fw-rb-main/blob/main/CHANGELOG.md"
+  - scope:
+      path: ""
+      type: ihm_versions
+    values:
+      layout: version
+      product: ihm
+      product_name: "IHM — Tela de interface (DWIN e Proculus)"
+      changelog_url: "https://github.com/Rentbrella-org/fw-rb-ihm-dwin/blob/main/CHANGELOG.md"

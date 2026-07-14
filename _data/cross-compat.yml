@@ -1,0 +1,46 @@
+# Compatibilidade cruzada Main (fw-rb-main) ↔ IHM
+# Edite este arquivo sempre que souber de uma combinação válida ou inválida.
+# Não precisa preencher tudo de uma vez — adicione regras conforme for usando.
+# Fontes: main_compat_* em _ihm_versions/ e ihm_compat_* em _fw_rb_main_versions/
+
+rules:
+  - ihm: "v3.2.1"
+    main_min: "v2.25.2-1"
+    main_max: null
+
+  - ihm: "v3.0.0"
+    main_min: "v2.22.0-1"
+    main_max: "v2.25.2-1"
+
+  - ihm: "v2.9.0"
+    main_min: "v2.22.0-1"
+    main_max: "v2.22.0-1"
+
+  - ihm: "v2.7.1"
+    main_min: "v2.16.0-1"
+    main_max: "v2.18.0-1"
+
+  - ihm: "v2.6.2"
+    main_min: "v2.16.0-1"
+    main_max: "v2.18.0-1"
+
+  - ihm: "v2.4.0"
+    main_min: "v2.15.0-1"
+    main_max: "v2.15.0-1"
+
+  - ihm: "v2.2.1"
+    main_min: "v2.12.2-1"
+    main_max: "v2.15.0-1"
+
+  - ihm: "v2.1.1"
+    main_min: "v2.11.4-1"
+    main_max: "v2.11.4-1"
+
+  - ihm: "v1.4.2"
+    main_min: "v2.7.6-1"
+    main_max: "v2.11.4-1"
+
+recommended_pairs:
+  - main: "aurora"
+    ihm: "v3.2.1-1"
+    note: "Par recomendado hoje para novas máquinas."

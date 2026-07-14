@@ -1,0 +1,36 @@
+{% assign data = site.data.cross-compat %}
+
+{% if data.recommended_pairs.size > 0 %}
+<section class="recommended-pairs">
+  <h3>Pares recomendados para novas instalações</h3>
+  <ul>
+    {% for pair in data.recommended_pairs %}
+    <li>
+      <strong>Main {{ pair.main }}</strong> + <strong>IHM {{ pair.ihm }}</strong>
+      {% if pair.note %} — {{ pair.note }}{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<div class="table-wrapper">
+  <table class="dashboard-table cross-compat-table">
+    <thead>
+      <tr>
+        <th>IHM</th>
+        <th>Main mínimo</th>
+        <th>Main máximo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rule in data.rules %}
+      <tr>
+        <td>{{ rule.ihm }}</td>
+        <td>{% if rule.main_min %}{{ rule.main_min }}{% else %}—{% endif %}</td>
+        <td>{% if rule.main_max %}{{ rule.main_max }}{% else %}—{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

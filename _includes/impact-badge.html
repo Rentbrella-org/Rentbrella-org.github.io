@@ -1,0 +1,8 @@
+{% case include.impact %}
+{% when 'none' %}{% assign label = 'Nenhum' %}{% assign css = 'none' %}
+{% when 'recommended' %}{% assign label = 'Recomendado' %}{% assign css = 'recommended' %}
+{% when 'group_specific' %}{% assign label = 'Grupo específico' %}{% assign css = 'group' %}
+{% when 'mandatory' %}{% assign label = 'Obrigatório' %}{% assign css = 'mandatory' %}
+{% else %}{% assign label = include.impact %}{% assign css = include.impact %}
+{% endcase %}
+<span class="badge badge-impact-{{ css }}">{{ label }}</span>

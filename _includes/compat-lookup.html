@@ -1,0 +1,121 @@
+{% comment %}
+  Compatibilidade cruzada por versão.
+  Parâmetros:
+    - page: documento da versão
+    - product: "fw_rb_main" ou "ihm"
+
+  Front matter explícito (min e/ou max) tem prioridade.
+  O fallback em cross-compat.yml só roda quando ambos estão vazios/null.
+{% endcomment %}
+
+{% if include.product == 'ihm' %}
+  {% assign compat_min = include.page.main_compat_min %}
+  {% assign compat_max = include.page.main_compat_max %}
+  {% assign link_product = 'fw_rb_main' %}
+  {% unless compat_min or compat_max %}
+    {% assign ver_raw = include.page.version | downcase %}
+    {% if ver_raw.size > 0 and ver_raw[0] == 'v' %}
+      {% assign ver_raw = ver_raw | slice: 1, 200 %}
+    {% endif %}
+    {% assign ver_parts = ver_raw | split: "." %}
+    {% assign ver_mm = ver_parts[0] | append: "." | append: ver_parts[1] %}
+    {% for rule in site.data.cross-compat.rules %}
+      {% assign rule_mm = rule.ihm | replace: ".x", "" %}
+      {% if ver_mm == rule_mm %}
+        {% assign compat_min = rule.main_min %}
+        {% assign compat_max = rule.main_max %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endunless %}
+  <dl class="preview-compat">
+    <div>
+      <dt>Main mínima</dt>
+      <dd>{% if compat_min %}{% include compat-version-link.html version=compat_min link_product=link_product prefer='lowest' %}{% else %}—{% endif %}</dd>
+    </div>
+    <div>
+      <dt>Main máxima</dt>
+      <dd>{% if compat_max %}{% include compat-version-link.html version=compat_max link_product=link_product prefer='highest' %}{% else %}—{% endif %}</dd>
+    </div>
+  </dl>
+{% else %}
+  {% assign compat_min = include.page.ihm_compat_min %}
+  {% assign compat_max = include.page.ihm_compat_max %}
+  {% assign link_product = 'ihm' %}
+  {% unless compat_min or compat_max %}
+    {% assign main_ver = include.page.version | downcase %}
+    {% if main_ver.size > 0 and main_ver[0] == 'v' %}
+      {% assign main_ver = main_ver | slice: 1, 200 %}
+    {% endif %}
+    {% assign mv_parts = main_ver | split: "." %}
+    {% assign mv_major = mv_parts[0] | plus: 0 %}
+    {% assign mv_minor = mv_parts[1] | plus: 0 %}
+    {% assign mv_patch = mv_parts[2] | default: "0" | split: "-" | first | plus: 0 %}
+    {% assign ihm_matches = "" | split: "" %}
+    {% for rule in site.data.cross-compat.rules %}
+      {% assign fits = true %}
+      {% if rule.main_min and rule.main_min != "" %}
+        {% assign min_raw = rule.main_min | downcase %}
+        {% if min_raw.size > 0 and min_raw[0] == 'v' %}
+          {% assign min_raw = min_raw | slice: 1, 200 %}
+        {% endif %}
+        {% assign min_parts = min_raw | split: "." %}
+        {% assign min_major = min_parts[0] | plus: 0 %}
+        {% assign min_minor = min_parts[1] | plus: 0 %}
+        {% assign min_patch = min_parts[2] | default: "0" | split: "-" | first | plus: 0 %}
+        {% if mv_major < min_major %}
+          {% assign fits = false %}
+        {% elsif mv_major == min_major and mv_minor < min_minor %}
+          {% assign fits = false %}
+        {% elsif mv_major == min_major and mv_minor == min_minor and mv_patch < min_patch %}
+          {% assign fits = false %}
+        {% endif %}
+      {% endif %}
+      {% if fits and rule.main_max and rule.main_max != "" %}
+        {% assign max_str = rule.main_max | downcase %}
+        {% if max_str.size > 0 and max_str[0] == 'v' %}
+          {% assign max_str = max_str | slice: 1, 200 %}
+        {% endif %}
+        {% if max_str contains ".x" %}
+          {% assign max_parts = max_str | replace: ".x", "" | split: "." %}
+          {% assign max_major = max_parts[0] | plus: 0 %}
+          {% assign max_minor = max_parts[1] | plus: 0 %}
+          {% if mv_major > max_major %}
+            {% assign fits = false %}
+          {% elsif mv_major == max_major and mv_minor > max_minor %}
+            {% assign fits = false %}
+          {% endif %}
+        {% else %}
+          {% assign max_parts = max_str | split: "." %}
+          {% assign max_major = max_parts[0] | plus: 0 %}
+          {% assign max_minor = max_parts[1] | plus: 0 %}
+          {% assign max_patch = max_parts[2] | default: "0" | split: "-" | first | plus: 0 %}
+          {% if mv_major > max_major %}
+            {% assign fits = false %}
+          {% elsif mv_major == max_major and mv_minor > max_minor %}
+            {% assign fits = false %}
+          {% elsif mv_major == max_major and mv_minor == max_minor and mv_patch > max_patch %}
+            {% assign fits = false %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+      {% if fits %}
+        {% assign ihm_matches = ihm_matches | push: rule.ihm %}
+      {% endif %}
+    {% endfor %}
+    {% if ihm_matches.size > 0 %}
+      {% assign compat_min = ihm_matches.first %}
+      {% assign compat_max = ihm_matches.last %}
+    {% endif %}
+  {% endunless %}
+  <dl class="preview-compat">
+    <div>
+      <dt>IHM mínima</dt>
+      <dd>{% if compat_min %}{% include compat-version-link.html version=compat_min link_product=link_product prefer='lowest' %}{% else %}—{% endif %}</dd>
+    </div>
+    <div>
+      <dt>IHM máxima</dt>
+      <dd>{% if compat_max %}{% include compat-version-link.html version=compat_max link_product=link_product prefer='highest' %}{% else %}—{% endif %}</dd>
+    </div>
+  </dl>
+{% endif %}

@@ -1,0 +1,145 @@
+---
+layout: default
+---
+{% case page.status %}
+{% when 'recomendada' %}{% assign status_label = 'Recomendada' %}
+{% when 'estavel' %}{% assign status_label = 'Estável' %}
+{% when 'danificada' %}{% assign status_label = 'Danificada' %}
+{% when 'descontinuada' %}{% assign status_label = 'Descontinuada' %}
+{% when 'recommended' %}{% assign status_label = 'Recomendada' %}
+{% when 'maintenance' %}{% assign status_label = 'Estável' %}
+{% when 'optional' %}{% assign status_label = 'Estável' %}
+{% when 'obsolete' %}{% assign status_label = 'Descontinuada' %}
+{% when 'test' %}{% assign status_label = 'Teste' %}
+{% else %}{% assign status_label = page.status | capitalize %}
+{% endcase %}
+<section class="update-banner update-banner--{{ page.status }}">
+  <p class="update-banner__label">Status</p>
+  <p class="update-banner__status">{{ status_label }}</p>
+  {% assign summary = page.summary | strip %}
+  {% if summary.size > 0 %}
+  <p class="update-banner__detail">{{ summary }}</p>
+  {% endif %}
+</section>
+
+<header class="version-header">
+  <h1>{{ page.product_name }} — {{ page.version }}</h1>
+  <div class="version-meta">
+    {% include status-badge.html status=page.status %}
+    {% include impact-badge.html impact=page.impact %}
+    <span class="meta-item">Lançamento: {{ page.released_at | date: "%d/%m/%Y" }}</span>
+    {% if page.discontinued_at %}
+    <span class="meta-item">Descontinuada em: {{ page.discontinued_at | date: "%d/%m/%Y" }}</span>
+    {% endif %}
+    {% assign replaced_version = page.replaces | strip %}
+    {% if replaced_version.size > 0 %}
+    {% assign replaced_display = replaced_version | remove_first: 'v' %}
+    <span class="meta-item">Substitui: v{{ replaced_display }}</span>
+    {% endif %}
+    {% if page.deploy %}
+    <span class="meta-item">Implantação: {{ page.deploy | capitalize }}</span>
+    {% endif %}
+  </div>
+</header>
+
+{% unless page.status == 'descontinuada' or page.status == 'danificada' or page.status == 'obsolete' %}
+<section class="version-section">
+  <div class="two-col">
+    <div class="col">
+      <h2>Recomendada para</h2>
+      {% if page.recommended_for.size > 0 %}
+      <ul>
+        {% for item in page.recommended_for %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">Não especificado.</p>
+      {% endif %}
+    </div>
+    <div class="col">
+      <h2>Não é necessário atualizar</h2>
+      {% if page.not_required_for.size > 0 %}
+      <ul>
+        {% for item in page.not_required_for %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">Não especificado.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endunless %}
+
+<section class="version-section compat-flags">
+  <h2>Compatibilidade operacional</h2>
+  {% include compat-table.html still_supported=page.still_supported %}
+  <div class="version-preview-compat">
+    <strong>Compatibilidade cruzada</strong>
+    {% include compat-lookup.html page=page product=page.product %}
+  </div>
+</section>
+
+{% if page.added.size > 0 or page.fixed.size > 0 or page.changed.size > 0 or page.removed.size > 0 or page.breaking.size > 0 %}
+<section class="version-section">
+  {% if page.added.size > 0 %}
+  <h2>Novidades</h2>
+  <ul>
+    {% for item in page.added %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.fixed.size > 0 %}
+  <h2>Correções</h2>
+  <ul>
+    {% for item in page.fixed %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.changed.size > 0 %}
+  <h2>Alterações</h2>
+  <ul>
+    {% for item in page.changed %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.removed.size > 0 %}
+  <h2>Removido</h2>
+  <ul>
+    {% for item in page.removed %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if page.breaking.size > 0 %}
+  <h2>Incompatibilidades</h2>
+  <ul class="breaking-list">
+    {% for item in page.breaking %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if page.known_issues.size > 0 %}
+<section class="version-section">
+  <h2>Bugs conhecidos</h2>
+  <ul class="known-issues-list">
+    {% for item in page.known_issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<p class="back-link"><a href="{% if page.product == 'fw_rb_main' %}{{ '/fw-rb-main/' | relative_url }}{% else %}{{ '/ihm/' | relative_url }}{% endif %}">← Voltar à lista de versões</a></p>
