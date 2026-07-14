@@ -1,64 +1,60 @@
 ---
 layout: default
 title: Política de ciclo de vida
-description: Definições de status, impacto e regras de negócio para releases de firmware.
+description: Status, impacto e regras de ciclo de vida das versões de firmware.
 permalink: /releases/policy/
 ---
 
 # Política de ciclo de vida
 
-Este portal traduz releases técnicas em **decisões operacionais**: o que pode ir para produção, o que está obsoleto e quando vale atualizar.
+Este portal traduz as releases técnicas em **contexto operacional**: o estado de cada versão, o impacto descrito da atualização e a compatibilidade entre placa principal (Main) e tela (IHM). A decisão de atualizar ou não fica com a operação.
 
 ## Fluxo de vida de uma versão
 
 ```mermaid
 flowchart LR
-    test[Teste] --> optional[Opcional]
-    optional --> recommended[Produção Recomendada]
-    recommended --> maintenance[Manutenção]
-    maintenance --> obsolete[Obsoleta]
+    lancamento[Lançamento] --> recomendada
+    recomendada --> estavel[Estável]
+    estavel --> descontinuada
+    recomendada --> problemaCritico[Problema crítico]
+    estavel --> problemaCritico
+    problemaCritico --> danificada
 ```
-
-1. **Teste** — versão em validação; nunca deploy em produção.
-2. **Opcional** — pode ser instalada, mas não é a referência.
-3. **Produção Recomendada** — versão de referência para novas instalações.
-4. **Manutenção** — ainda suportada, mas uma versão mais nova é preferível.
-5. **Obsoleta** — não instalar; evitar em máquinas novas.
 
 ## Status operacionais
 
+Cada status descreve o **estado atual** da versão. A decisão de instalar, manter ou trocar fica com a operação, com base nesse contexto.
+
 <table class="definitions-table">
   <thead>
-    <tr><th>Status</th><th>Significado</th><th>Pode instalar?</th></tr>
+    <tr><th>Status</th><th>Estado da versão</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td>{% include status-badge.html status='test' %}</td>
-      <td>Em validação interna ou piloto controlado.</td>
-      <td>Apenas ambiente de teste (<code>test_only: true</code>).</td>
+      <td>{% include status-badge.html status='recomendada' %}</td>
+      <td>Versão de referência no momento: validada para produção, alinhada ao parque atual e indicada pela engenharia para novas instalações e atualizações de rotina.</td>
     </tr>
     <tr>
-      <td>{% include status-badge.html status='optional' %}</td>
-      <td>Release válida, mas não é a referência atual.</td>
-      <td>Sim, se atender requisitos de hardware.</td>
+      <td>{% include status-badge.html status='estavel' %}</td>
+      <td>Versão sem bug conhecido específico dela e ainda aceitável em produção, mas já não é a referência geral — existe uma Recomendada mais recente, ou ela só faz sentido para um modelo, tipo de máquina ou cliente específico.</td>
     </tr>
     <tr>
-      <td>{% include status-badge.html status='recommended' %}</td>
-      <td>Versão de referência para produção.</td>
-      <td>Sim — preferida para novas máquinas.</td>
+      <td>{% include status-badge.html status='danificada' %}</td>
+      <td>Versão com problema crítico identificado. Máquinas nessa versão estão expostas a falha relevante e a engenharia sinaliza risco operacional.</td>
     </tr>
     <tr>
-      <td>{% include status-badge.html status='maintenance' %}</td>
-      <td>Ainda suportada; versão mais nova disponível.</td>
-      <td>Sim, mas planeje migração.</td>
-    </tr>
-    <tr>
-      <td>{% include status-badge.html status='obsolete' %}</td>
-      <td>Fora de suporte operacional.</td>
-      <td><strong>Não</strong> em instalações novas.</td>
+      <td>{% include status-badge.html status='descontinuada' %}</td>
+      <td>Versão fora do ciclo operacional: não recebe mais suporte ativo e não faz parte do conjunto indicado para o parque atual.</td>
     </tr>
   </tbody>
 </table>
+
+### Resumo rápido
+
+1. **Recomendada** — referência atual da engenharia (validada, alinhada ao parque, indicada para novas instalações e atualizações).
+2. **Estável** — sem problema conhecido específico dela; já há uma referência mais nova, ou só é útil para um modelo, tipo de máquina ou cliente específico.
+3. **Danificada** — problema crítico conhecido; risco operacional nessa versão.
+4. **Descontinuada** — fora de suporte e fora do conjunto indicado para o parque.
 
 ## Níveis de impacto da atualização
 
@@ -77,27 +73,18 @@ flowchart LR
     </tr>
     <tr>
       <td>{% include impact-badge.html impact='group_specific' %}</td>
-      <td>Benefício limitado a um grupo de máquinas (hardware, região, fluxo).</td>
+      <td>Benefício limitado a um grupo de máquinas (hardware, região ou fluxo).</td>
     </tr>
     <tr>
       <td>{% include impact-badge.html impact='mandatory' %}</td>
-      <td>Atualização necessária por breaking change ou requisito de segurança.</td>
+      <td>Atualização necessária por mudança incompatível com a versão anterior ou por requisito de segurança.</td>
     </tr>
   </tbody>
 </table>
 
 ## Regras de negócio
 
-- **Versão em teste nunca vai para produção** — o campo `deploy: test` ou `test_only: true` deve estar visível no dashboard.
-- **Obsoleta = não instalar** — nem em manutenção corretiva, salvo exceção documentada pela engenharia.
-- **"Devo atualizar?" prevalece** — o banner no topo de cada versão é a orientação operacional; o CHANGELOG técnico complementa.
-- **Compatibilidade cruzada Main ↔ IHM** — consulte a [tabela de compatibilidade]({{ '/releases/compatibility/' | relative_url }}) antes de combinar versões.
-- **Conteúdo preliminar** — campos de política podem ser placeholder até validação pela equipe; sinalize dúvidas à engenharia.
-
-## Processo ao publicar nova versão
-
-1. Criar arquivo Markdown em `_rbx01_versions/` ou `_ihm_versions/`.
-2. Preencher `should_update` em linguagem de negócio.
-3. Rebaixar status da versão anterior (ex.: recommended → maintenance).
-4. Atualizar `_data/cross-compat.yml` se a combinação Main+IHM mudar.
-5. Abrir PR usando o checklist em `.github/PULL_REQUEST_TEMPLATE/new-release.md`.
+- **Status descreve estado, não ordem** — o portal informa o contexto da versão; a operação decide com base nisso e no cenário da máquina.
+- **O portal informa, não decide** — o banner e o status descrevem o estado da versão; a operação decide no cenário de cada máquina.
+- **Compatibilidade cruzada Main ↔ IHM** — consulte a [tabela de compatibilidade]({{ '/releases/compatibility/' | relative_url }}) antes de combinar versões da placa e da tela.
+- **Conteúdo preliminar** — alguns campos podem estar provisórios até validação pela equipe; em caso de dúvida, confirme com a engenharia.

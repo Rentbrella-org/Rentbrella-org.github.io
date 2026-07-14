@@ -1,30 +1,30 @@
 ---
 layout: default
 title: Portal de Política de Releases
-description: Este portal define quais versões podem ser instaladas e quando vale atualizar.
+description: Consulta informativa das versões de firmware e suas funcionalidades.
 ---
 
 <section class="hero">
   <div class="hero-logo">
-    <img src="https://i.imgur.com/q1qHKSc.png" alt="Rentbrella" height="60">
+    <img src="{{ '/assets/img/logo-purple.png' | relative_url }}" alt="Rentbrella" height="48">
   </div>
   <h1>Portal de Política de Releases</h1>
   <p class="lead">
-    Este portal define <strong>quais versões podem ser instaladas</strong> e
-    <strong>quando vale atualizar</strong> — em linguagem operacional, não técnica.
+    Portal informativo com <strong>quais versões de firmware existem</strong> e
+    <strong>suas funcionalidades</strong> — para as máquinas de compartilhamento de guarda-chuva.
   </p>
 </section>
 
 <div class="product-cards">
-  <a href="{{ '/rbx-01/' | relative_url }}" class="product-card">
-    <h2>RBX-01 — Main Board</h2>
-    <p>Firmware da placa principal. Controla sensores, atuadores, LEDs e interação com a IHM.</p>
-    <span class="recommended">Recomendada: v2.27.7</span>
+  <a href="{{ '/fw-rb-main/' | relative_url }}" class="product-card">
+    <h2>fw-rb-main — Placa principal</h2>
+    <p>Firmware da placa principal (Main). Controla sensores, motores, LEDs e a comunicação com a tela (IHM).</p>
+    {% include recommended-version.html product='fw_rb_main' %}
   </a>
   <a href="{{ '/ihm/' | relative_url }}" class="product-card">
-    <h2>IHM — Display DWIN</h2>
-    <p>Firmware da tela de interface. Suporta modelos 800×480 (atual) e 1024×768 (legado).</p>
-    <span class="recommended">Recomendada: v3.2.1</span>
+    <h2>IHM — Tela de interface</h2>
+    <p>Firmware da tela (IHM). Modelos de 7 polegadas (800×480, atual) e 10 polegadas (1024×768, legado).</p>
+    {% include recommended-version.html product='ihm' %}
   </a>
 </div>
 

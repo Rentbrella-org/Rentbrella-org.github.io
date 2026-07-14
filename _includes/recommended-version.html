@@ -1,0 +1,18 @@
+{% comment %}
+  Exibe a versão com status "recomendada" da collection do produto.
+  Parâmetros:
+    - product: "fw_rb_main" ou "ihm"
+    - label: texto antes da versão (padrão: "Versão recomendada")
+    - class: classe CSS do elemento (padrão: "recommended")
+{% endcomment %}
+
+{% if include.product == 'fw_rb_main' %}
+  {% assign versions = site.fw_rb_main_versions %}
+{% elsif include.product == 'ihm' %}
+  {% assign versions = site.ihm_versions %}
+{% endif %}
+
+{% assign rec = versions | where: "status", "recomendada" | first %}
+{% if rec %}
+<span class="{{ include.class | default: 'recommended' }}">{{ include.label | default: 'Versão recomendada' }}: {{ rec.version }}</span>
+{% endif %}

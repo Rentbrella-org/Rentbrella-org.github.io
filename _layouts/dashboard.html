@@ -8,43 +8,33 @@ layout: default
   {% endif %}
 </header>
 
-{% if page.product == 'rbx-01' %}
-  {% assign versions = site.rbx01_versions | sort: 'released_at' | reverse %}
+{% if page.product == 'fw_rb_main' %}
+  {% assign versions = site.fw_rb_main_versions | sort: 'released_at' | reverse %}
 {% elsif page.product == 'ihm' %}
   {% assign versions = site.ihm_versions | sort: 'released_at' | reverse %}
 {% else %}
   {% assign versions = nil %}
 {% endif %}
 
-{% if page.recommended_version %}
-{% assign recommended = nil %}
-{% for v in versions %}
-  {% if v.version == page.recommended_version %}
-    {% assign recommended = v %}
-    {% break %}
-  {% endif %}
-{% endfor %}
+{% assign recommended = versions | where: "status", "recomendada" | first %}
+{% if recommended %}
 <section class="recommended-banner">
   <span class="recommended-label">Versão recomendada atual</span>
-  {% if recommended %}
-  <a class="recommended-version" href="{{ recommended.url | relative_url }}">v{{ page.recommended_version }}</a>
-  {% else %}
-  <span class="recommended-version">v{{ page.recommended_version }}</span>
-  {% endif %}
+  <a class="recommended-version" href="{{ recommended.url | relative_url }}">{{ recommended.version }}</a>
 </section>
 {% endif %}
 
 {% if page.show_version_lookup %}
-{% if page.product == 'rbx-01' %}
-  {% assign lookup_collection = site.rbx01_versions %}
+{% if page.product == 'fw_rb_main' %}
+  {% assign lookup_collection = site.fw_rb_main_versions %}
 {% else %}
   {% assign lookup_collection = site.ihm_versions %}
 {% endif %}
 <section class="version-lookup">
   <h2>Tenho uma versão instalada</h2>
-  <p>Digite a versão na máquina (ex.: 2.27.7) para abrir a página de política correspondente.</p>
+  <p>Digite a versão que aparece na máquina (ex.: 2.25.2-1) para abrir a página correspondente.</p>
   <div class="lookup-form">
-    <input type="text" id="version-input" placeholder="Ex.: 2.27.7" aria-label="Versão instalada">
+    <input type="text" id="version-input" placeholder="Ex.: 2.25.2-1" aria-label="Versão instalada">
     <button type="button" id="version-lookup-btn">Buscar</button>
   </div>
   <p id="version-lookup-result" class="lookup-result" hidden></p>
@@ -74,7 +64,7 @@ layout: default
     }
     if (versions[key]) { window.location.href = versions[key]; return; }
     result.hidden = false;
-    result.textContent = 'Versão não encontrada neste portal. Consulte a tabela ou a equipe de engenharia.';
+    result.textContent = 'Versão não encontrada neste portal. Confira a tabela de versões ou fale com a engenharia.';
     result.className = 'lookup-result lookup-result--warn';
   }
   btn.addEventListener('click', lookup);
@@ -85,7 +75,7 @@ layout: default
 
 <section class="dashboard-section">
   <h2>Todas as versões</h2>
-  <p class="dashboard-hint muted">Passe o mouse sobre uma versão para ver o resumo. Toque na linha (mobile) para expandir.</p>
+  <p class="dashboard-hint muted">Passe o mouse sobre uma versão para ver o resumo. No celular, toque na linha para expandir.</p>
   <div class="table-wrapper">
     <table class="dashboard-table dashboard-table--preview">
       <thead>
@@ -99,8 +89,8 @@ layout: default
       <tbody class="version-row-group">
         <tr class="version-row status-row status-{{ v.status }}" tabindex="0" aria-expanded="false">
           <td>
-            <a href="{{ v.url | relative_url }}" class="version-link">v{{ v.version }}</a>
-            <button type="button" class="preview-toggle" aria-label="Mostrar resumo da v{{ v.version }}" aria-expanded="false">
+            <a href="{{ v.url | relative_url }}" class="version-link">{{ v.version }}</a>
+            <button type="button" class="preview-toggle" aria-label="Mostrar resumo da {{ v.version }}" aria-expanded="false">
               <span aria-hidden="true">ℹ</span>
             </button>
           </td>
@@ -112,6 +102,9 @@ layout: default
             <div class="version-preview-card">
               <p class="version-preview-summary">{{ v.summary | default: v.should_update }}</p>
               <p class="version-preview-date"><strong>Lançamento:</strong> {{ v.released_at | date: "%d/%m/%Y" }}</p>
+              {% if v.discontinued_at %}
+              <p class="version-preview-date"><strong>Descontinuada em:</strong> {{ v.discontinued_at | date: "%d/%m/%Y" }}</p>
+              {% endif %}
               <div class="version-preview-compat">
                 <strong>Compatibilidade cruzada</strong>
                 {% include compat-lookup.html page=v product=page.product %}

@@ -1,5 +1,5 @@
 title: Portal de Política de Releases
-description: Quais versões podem ser instaladas e quando vale atualizar — RBX-01 e IHM
+description: Consulta informativa das versões de firmware e suas funcionalidades — placa principal (fw-rb-main) e tela (IHM)
 url: "https://rentbrella-org.github.io"
 baseurl: ""
 lang: pt-BR
@@ -19,9 +19,9 @@ exclude:
   - README.md
 
 collections:
-  rbx01_versions:
+  fw_rb_main_versions:
     output: true
-    permalink: /rbx-01/versions/:name/
+    permalink: /fw-rb-main/versions/:name/
   ihm_versions:
     output: true
     permalink: /ihm/versions/:name/
@@ -29,11 +29,11 @@ collections:
 defaults:
   - scope:
       path: ""
-      type: rbx01_versions
+      type: fw_rb_main_versions
     values:
       layout: version
-      product: rbx-01
-      product_name: "RBX-01 — Main Board"
+      product: fw_rb_main
+      product_name: "fw-rb-main — Placa principal"
       changelog_url: "https://github.com/Rentbrella-org/fw-rb-main/blob/main/CHANGELOG.md"
   - scope:
       path: ""
@@ -41,5 +41,5 @@ defaults:
     values:
       layout: version
       product: ihm
-      product_name: "IHM — Display DWIN"
+      product_name: "IHM — Tela de interface (DWIN e Proculus)"
       changelog_url: "https://github.com/Rentbrella-org/fw-rb-ihm-dwin/blob/main/CHANGELOG.md"

@@ -1,0 +1,77 @@
+{% comment %}
+  Linka uma string de versão de compatibilidade à página correspondente no portal.
+  Parâmetros:
+    - version: ex. "3.2.1", "v1.4.2-1", "3.0.x"
+    - link_product: "fw_rb_main" ou "ihm"
+    - prefer: "lowest" ou "highest" (para faixas .x; padrão: lowest)
+{% endcomment %}
+
+{% assign label = include.version | strip %}
+{% if label == "" %}
+  —
+{% else %}
+  {% if include.link_product == 'fw_rb_main' %}
+    {% assign coll = site.fw_rb_main_versions %}
+  {% else %}
+    {% assign coll = site.ihm_versions %}
+  {% endif %}
+
+  {% assign prefer = include.prefer | default: 'lowest' %}
+  {% assign match_url = nil %}
+  {% assign match_date = nil %}
+
+  {% assign label_cmp = label | downcase %}
+  {% if label_cmp.size > 0 and label_cmp[0] == 'v' %}
+    {% assign label_cmp = label_cmp | slice: 1, 200 %}
+  {% endif %}
+
+  {% assign is_range = false %}
+  {% if label contains '.x' %}
+    {% assign is_range = true %}
+    {% assign range_prefix = label | replace: '.x', '' | downcase %}
+    {% if range_prefix.size > 0 and range_prefix[0] == 'v' %}
+      {% assign range_prefix = range_prefix | slice: 1, 200 %}
+    {% endif %}
+    {% assign range_parts = range_prefix | split: '.' %}
+    {% assign range_major = range_parts[0] | plus: 0 %}
+    {% assign range_minor = range_parts[1] | plus: 0 %}
+  {% endif %}
+
+  {% for doc in coll %}
+    {% assign ver_cmp = doc.version | downcase %}
+    {% if ver_cmp.size > 0 and ver_cmp[0] == 'v' %}
+      {% assign ver_cmp = ver_cmp | slice: 1, 200 %}
+    {% endif %}
+
+    {% assign fits = false %}
+    {% if is_range %}
+      {% assign ver_parts = ver_cmp | split: '.' %}
+      {% assign ver_major = ver_parts[0] | plus: 0 %}
+      {% assign ver_minor = ver_parts[1] | plus: 0 %}
+      {% if ver_major == range_major and ver_minor == range_minor %}
+        {% assign fits = true %}
+      {% endif %}
+    {% elsif ver_cmp == label_cmp %}
+      {% assign fits = true %}
+    {% endif %}
+
+    {% if fits %}
+      {% if match_url == nil %}
+        {% assign match_url = doc.url %}
+        {% assign match_date = doc.released_at %}
+      {% elsif prefer == 'highest' and doc.released_at > match_date %}
+        {% assign match_url = doc.url %}
+        {% assign match_date = doc.released_at %}
+      {% elsif prefer == 'lowest' and doc.released_at < match_date %}
+        {% assign match_url = doc.url %}
+        {% assign match_date = doc.released_at %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if match_url %}
+    <a href="{{ match_url | relative_url }}" class="compat-version-link">{{ label }}</a>
+  {% else %}
+    {{ label }}
+  {% endif %}
+{% endif %}

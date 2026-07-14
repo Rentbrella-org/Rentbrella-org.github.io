@@ -1,9 +1,13 @@
 {% case include.status %}
+{% when 'recomendada' %}{% assign label = 'Recomendada' %}
+{% when 'estavel' %}{% assign label = 'Estável' %}
+{% when 'danificada' %}{% assign label = 'Danificada' %}
+{% when 'descontinuada' %}{% assign label = 'Descontinuada' %}
+{% when 'recommended' %}{% assign label = 'Recomendada' %}
+{% when 'maintenance' %}{% assign label = 'Estável' %}
+{% when 'optional' %}{% assign label = 'Estável' %}
+{% when 'obsolete' %}{% assign label = 'Descontinuada' %}
 {% when 'test' %}{% assign label = 'Teste' %}
-{% when 'optional' %}{% assign label = 'Opcional' %}
-{% when 'recommended' %}{% assign label = 'Produção Recomendada' %}
-{% when 'maintenance' %}{% assign label = 'Manutenção' %}
-{% when 'obsolete' %}{% assign label = 'Obsoleta' %}
 {% else %}{% assign label = include.status %}
 {% endcase %}
 <span class="badge badge-{{ include.status }}">{{ label }}</span>

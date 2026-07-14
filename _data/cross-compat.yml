@@ -1,33 +1,46 @@
-# Compatibilidade cruzada Main (RBX-01) ↔ IHM
+# Compatibilidade cruzada Main (fw-rb-main) ↔ IHM
 # Edite este arquivo sempre que souber de uma combinação válida ou inválida.
 # Não precisa preencher tudo de uma vez — adicione regras conforme for usando.
+# Fontes: main_compat_* em _ihm_versions/ e ihm_compat_* em _fw_rb_main_versions/
 
 rules:
-  - ihm: "3.2.x"
-    main_min: "2.27.0"
+  - ihm: "v3.2.1"
+    main_min: "v2.25.2-1"
     main_max: null
-    status: ok
-    note: "Funciona normalmente. Requer Main com suporte ao Registration Flow."
 
-  - ihm: "3.1.x"
-    main_min: "2.25.0"
-    main_max: "2.27.x"
-    status: ok
-    note: "Compatível com versões estáveis em campo."
+  - ihm: "v3.0.0"
+    main_min: "v2.22.0-1"
+    main_max: "v2.25.2-1"
 
-  - ihm: "3.0.x"
-    main_min: "2.24.0"
-    main_max: null
-    status: warning
-    note: "IHM 3.0 mudou resolução (800×480). Verificar modelo de tela antes de instalar."
+  - ihm: "v2.9.0"
+    main_min: "v2.22.0-1"
+    main_max: "v2.22.0-1"
 
-  - ihm: "2.2.x"
-    main_min: null
-    main_max: "2.23.x"
-    status: incompatible
-    note: "Resolução 1024×768 — não combinar com Main recente."
+  - ihm: "v2.7.1"
+    main_min: "v2.16.0-1"
+    main_max: "v2.18.0-1"
+
+  - ihm: "v2.6.2"
+    main_min: "v2.16.0-1"
+    main_max: "v2.18.0-1"
+
+  - ihm: "v2.4.0"
+    main_min: "v2.15.0-1"
+    main_max: "v2.15.0-1"
+
+  - ihm: "v2.2.1"
+    main_min: "v2.12.2-1"
+    main_max: "v2.15.0-1"
+
+  - ihm: "v2.1.1"
+    main_min: "v2.11.4-1"
+    main_max: "v2.11.4-1"
+
+  - ihm: "v1.4.2"
+    main_min: "v2.7.6-1"
+    main_max: "v2.11.4-1"
 
 recommended_pairs:
-  - main: "2.27.7"
-    ihm: "3.2.1"
-    note: "Par recomendado atual para novas máquinas."
+  - main: "aurora"
+    ihm: "v3.2.1-1"
+    note: "Par recomendado hoje para novas máquinas."
