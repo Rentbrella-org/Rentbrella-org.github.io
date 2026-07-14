@@ -13,12 +13,12 @@ Este portal traduz as releases técnicas em **contexto operacional**: o estado d
 
 ```mermaid
 flowchart LR
-    lancamento[Lançamento] --> recomendada
+    lancamento[Lançamento] --> recomendada[Recomendada]
     recomendada --> estavel[Estável]
-    estavel --> descontinuada
+    estavel --> descontinuada[Descontinuada]
     recomendada --> problemaCritico[Problema crítico]
     estavel --> problemaCritico
-    problemaCritico --> danificada
+    problemaCritico --> danificada[Danificada]
 ```
 
 ## Status operacionais
