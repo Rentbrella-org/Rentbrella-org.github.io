@@ -3,7 +3,6 @@ layout: dashboard
 title: fw-rb-main — Placa principal
 product: fw_rb_main
 description: Versões do firmware da placa principal (fw-rb-main).
-show_version_lookup: true
 permalink: /fw-rb-main/
 ---
 

@@ -14,6 +14,7 @@ versions:
     planned_features:
       - "Suporte ao modelo de máquina RB-08"
       - "Melhorias na experiência do usuário no início da máquina"
+      - "Código para fluxo de matrícula acessar tela de QRCode"
       - "Ajuste na leitura de sensores ao detectar possível curto"
 
   - name: "bruma"
@@ -208,6 +209,16 @@ active_tests:
     notes: ""
     target_version: "bruma"
 
+  - name: "código para fluxo de matrícula acessar tela de qr code"
+    main:
+      - "eng"
+    ihm:
+      - "v3.2.1-1"
+    started_at: null
+    expected_end: null
+    notes: ""
+    target_version: "brisa"
+
 finished_tests:
   - name: "funcionalidade dos slots"
     main:
@@ -223,3 +234,13 @@ finished_tests:
     finished_at: 2026-06-30
     notes: ""
     target_version: "aurora"
+
+  - name: "Placas LED para máquinas RB-03"
+    main:
+      - "eng"
+    ihm:
+      - "v3.2.1-1"
+    started_at: null
+    finished_at: null
+    notes: ""
+    target_version: "v2.27.5-1-lb-rb03"

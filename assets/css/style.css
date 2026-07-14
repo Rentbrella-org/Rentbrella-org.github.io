@@ -418,49 +418,6 @@ h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; }
 
 .recommended-version:hover { text-decoration: underline; }
 
-.version-lookup {
-  background: #fff;
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-  box-shadow: var(--shadow);
-}
-
-.lookup-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-
-.lookup-form input {
-  flex: 1;
-  min-width: 140px;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--rb-gray-200);
-  border-radius: var(--radius);
-  font-size: 1rem;
-}
-
-.lookup-form button {
-  padding: 0.6rem 1rem;
-  background: var(--rb-purple);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.lookup-form button:hover { background: var(--rb-purple-dark); }
-
-.lookup-result {
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
-}
-
-.lookup-result--warn { color: #664d03; }
-
 .table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
