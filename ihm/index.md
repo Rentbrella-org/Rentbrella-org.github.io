@@ -3,7 +3,6 @@ layout: dashboard
 title: IHM — Tela de interface
 product: ihm
 description: Versões do firmware da tela (IHM) — modelos DWIN e Proculus.
-show_version_lookup: true
 permalink: /ihm/
 ---
 
