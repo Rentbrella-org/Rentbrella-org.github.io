@@ -18,8 +18,10 @@ O conteúdo é Markdown com front matter YAML. O Jekyll gera páginas a partir d
 | `_fw_rb_main_versions/*.md` | Uma página por versão do Main |
 | `_ihm_versions/*.md` | Uma página por versão da IHM |
 | `_data/cross-compat.yml` | Regras de compatibilidade Main ↔ IHM |
+| `_data/roadmap.yml` | Roadmap de versões nomeadas e conjuntos em teste |
 | `releases/policy.md` | Política de ciclo de vida (status, impacto) |
 | `releases/compatibility.md` | Tabela de compatibilidade |
+| `releases/futuro.md` | Página Futuro (roadmap + testes) |
 | `_layouts/` | Templates (`default`, `dashboard`, `version`) |
 | `_includes/` | Badges, tabelas e lookups reutilizáveis |
 | `_config.yml` | Collections, permalinks e defaults |
@@ -240,10 +242,95 @@ Edite `_data/cross-compat.yml`:
 - `rules` — faixas IHM ↔ Main (`ok`, `warning`, `incompatible`)
 - `recommended_pairs` — par recomendado atual para novas máquinas
 
-### 4. Páginas estáticas
+### 4. Roadmap e versões em teste (aba Futuro)
+
+A página `/releases/futuro/` é alimentada por `_data/roadmap.yml` (mesmo padrão da compatibilidade: edite o YAML, sem páginas individuais).
+
+Três seções:
+
+1. **Versões seguintes** — nomes reservados; passe o mouse (ou toque no celular) para ver `summary` e `planned_features`
+2. **Testes em andamento** — conjuntos Main + IHM sob validação
+3. **Testes finalizados** — testes encerrados (operação pode retirar da rua)
+
+#### Status das versões no roadmap
+
+| Valor | Label na UI | Significado |
+|---|---|---|
+| `planejada` | Planejada | Nome reservado; ainda sem trabalho ativo |
+| `conceito` | Conceito | Escopo e ideias em definição |
+| `desenvolvimento` | Em desenvolvimento | Features sendo implementadas |
+| `teste` | Em teste | Validação em lab ou campo |
+
+Quando a versão é lançada, **remova-a** de `_data/roadmap.yml` e crie a página em `_fw_rb_main_versions/` (ou `_ihm_versions/`) com status operacional (`recomendada`, `estavel`, etc.).
+
+#### Schema — `versions`
+
+| Campo | Uso |
+|---|---|
+| `name` | Nome da versão (ex.: `"Brisa"`) |
+| `status` | `planejada` \| `conceito` \| `desenvolvimento` \| `teste` |
+| `expected_release` | Previsão de lançamento (`YYYY-MM-DD` ou `null`) |
+| `date_updated_at` | Quando a previsão foi revisada pela última vez (`YYYY-MM-DD` ou `null`). Na UI, datas com ≤ 14 dias aparecem como “recente” |
+| `summary` | Resumo curto (aparece no preview ao hover) |
+| `planned_features` | Lista do que está previsto na versão (também no preview) |
+
+Ao mudar a data de lançamento, atualize **sempre** `expected_release` **e** `date_updated_at` juntos.
+
+```yaml
+versions:
+  - name: "Brisa"
+    status: planejada
+    expected_release: 2026-09-01
+    date_updated_at: 2026-07-14
+    summary: "Próxima versão nomeada após Aurora."
+    planned_features:
+      - "Funcionalidade dos slots"
+```
+
+#### Schema — `active_tests` / `finished_tests`
+
+| Campo | Uso |
+|---|---|
+| `name` | Nome do teste / funcionalidade |
+| `main` | Lista de versões Main sob teste (ex.: `["v2.27.5-1", "v2.27.7-1"]`) |
+| `ihm` | Lista de versões IHM sob teste |
+| `started_at` | Início dos testes |
+| `expected_end` | Só em `active_tests` — previsão de fim |
+| `finished_at` | Só em `finished_tests` — data de encerramento |
+| `target_version` | Opcional — em qual versão nomeada isso deve sair |
+| `notes` | Observações para operação / engenharia |
+
+Ao concluir um teste: mova o item de `active_tests` para `finished_tests` e preencha `finished_at`.
+
+```yaml
+active_tests:
+  - name: "funcionalidade dos slots"
+    main:
+      - "v2.27.7-1"
+    ihm:
+      - "v3.2.1-1"
+    started_at: 2026-07-01
+    expected_end: 2026-07-31
+    notes: ""
+    target_version: "brisa"
+
+finished_tests:
+  - name: "exemplo concluído"
+    main:
+      - "v2.26.0-1"
+      - "v2.26.1-1"
+    ihm:
+      - "v3.2.1-1"
+    started_at: 2026-05-01
+    finished_at: 2026-06-15
+    notes: "Operação pode remover da rua."
+```
+
+### 5. Páginas estáticas
 
 - Política: `releases/policy.md`
 - Compatibilidade: `releases/compatibility.md`
+- Futuro: `releases/futuro.md`
 - Textos dos dashboards: `fw_rb_main/index.md`, `ihm/index.md`
 
 ---
@@ -260,17 +347,20 @@ URL: `https://rentbrella-org.github.io`
 
 ```
 ├── _config.yml                 # Collections e defaults
-├── _data/cross-compat.yml      # Compat Main ↔ IHM
+├── _data/
+│   ├── cross-compat.yml        # Compat Main ↔ IHM
+│   └── roadmap.yml             # Roadmap + testes (aba Futuro)
 ├── _fw_rb_main_versions/       # Versões do Main
 ├── _ihm_versions/              # Versões da IHM
-├── _includes/                  # Partials (badges, tabelas)
+├── _includes/                  # Partials (badges, tabelas, roadmap)
 ├── _layouts/                   # Templates
 ├── assets/css/style.css
 ├── fw_rb_main/index.md
 ├── ihm/index.md
 ├── releases/
 │   ├── policy.md
-│   └── compatibility.md
+│   ├── compatibility.md
+│   └── futuro.md
 ├── index.md
 ├── Gemfile
 └── .github/PULL_REQUEST_TEMPLATE/new-release.md
@@ -282,5 +372,6 @@ URL: `https://rentbrella-org.github.io`
 
 - [Política de ciclo de vida](https://rentbrella-org.github.io/releases/policy/)
 - [Tabela de compatibilidade](https://rentbrella-org.github.io/releases/compatibility/)
+- [Futuro / versões em teste](https://rentbrella-org.github.io/releases/futuro/)
 - CHANGELOG [fw-rb-main](https://github.com/Rentbrella-org/fw-rb-main/blob/main/CHANGELOG.md)
 - CHANGELOG [fw-rb-ihm-dwin](https://github.com/Rentbrella-org/fw-rb-ihm-dwin/blob/main/CHANGELOG.md)

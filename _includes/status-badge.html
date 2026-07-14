@@ -8,6 +8,10 @@
 {% when 'optional' %}{% assign label = 'Estável' %}
 {% when 'obsolete' %}{% assign label = 'Descontinuada' %}
 {% when 'test' %}{% assign label = 'Teste' %}
+{% when 'planejada' %}{% assign label = 'Planejada' %}
+{% when 'conceito' %}{% assign label = 'Conceito' %}
+{% when 'desenvolvimento' %}{% assign label = 'Em desenvolvimento' %}
+{% when 'teste' %}{% assign label = 'Em teste' %}
 {% else %}{% assign label = include.status %}
 {% endcase %}
 <span class="badge badge-{{ include.status }}">{{ label }}</span>

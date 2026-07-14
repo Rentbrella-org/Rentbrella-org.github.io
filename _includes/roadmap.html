@@ -1,0 +1,263 @@
+{% assign data = site.data.roadmap %}
+{% assign now_s = "now" | date: "%s" | plus: 0 %}
+{% assign fresh_window = 1209600 %}
+
+<section class="roadmap-section">
+  <h2>Versões seguintes</h2>
+  <p class="dashboard-hint muted">Passe o mouse sobre uma versão para ver o resumo e o previsto. No celular, toque na linha para expandir. Datas são previsões — “Atualizado em” mostra quando a previsão foi revisada.</p>
+
+  <div class="table-wrapper">
+    <table class="dashboard-table dashboard-table--preview roadmap-versions-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Status</th>
+          <th>Previsão de lançamento</th>
+          <th>Atualizado em</th>
+        </tr>
+      </thead>
+      {% for v in data.versions %}
+      {% assign status_label = v.status | replace: "_", " " | capitalize %}
+      {% if v.status == "planejada" %}
+        {% assign status_label = "Planejada" %}
+      {% elsif v.status == "conceito" %}
+        {% assign status_label = "Conceito" %}
+      {% elsif v.status == "desenvolvimento" %}
+        {% assign status_label = "Em desenvolvimento" %}
+      {% elsif v.status == "teste" %}
+        {% assign status_label = "Em teste" %}
+      {% endif %}
+      <tbody class="version-row-group">
+        <tr class="version-row status-row status-{{ v.status }}" tabindex="0" aria-expanded="false">
+          <td>
+            <strong class="version-link">{{ v.name }}</strong>
+            <button type="button" class="preview-toggle" aria-label="Mostrar resumo da {{ v.name }}" aria-expanded="false">
+              <span aria-hidden="true">ℹ</span>
+            </button>
+          </td>
+          <td><span class="badge badge-{{ v.status }}">{{ status_label }}</span></td>
+          <td>{% if v.expected_release %}{{ v.expected_release | date: "%Y-%m-%d" }}{% else %}—{% endif %}</td>
+          <td>
+            {% if v.date_updated_at %}
+              {% assign updated_s = v.date_updated_at | date: "%s" | plus: 0 %}
+              {% assign age = now_s | minus: updated_s %}
+              <span{% if age <= fresh_window %} class="date-fresh"{% endif %}>{{ v.date_updated_at | date: "%Y-%m-%d" }}</span>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+        <tr class="version-preview-row">
+          <td colspan="4">
+            <div class="version-preview-card">
+              {% if v.summary and v.summary != "" %}
+              <p class="version-preview-summary">{{ v.summary }}</p>
+              {% else %}
+              <p class="version-preview-summary muted">Sem resumo ainda.</p>
+              {% endif %}
+              {% if v.planned_features and v.planned_features.size > 0 %}
+              <div class="version-preview-compat">
+                <strong>Funcionalidades planejadas</strong>
+                <ul class="roadmap-features">
+                  {% for feature in v.planned_features %}
+                  <li>{{ feature }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% else %}
+              <p class="version-preview-date muted">Nenhuma feature planejada listada.</p>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<section class="roadmap-section">
+  <h2>Testes em andamento</h2>
+  <p class="dashboard-hint muted">Conjuntos Main + IHM sob validação. Passe o mouse sobre um teste para ver datas, versão alvo e notas. No celular, toque na linha para expandir.</p>
+
+  {% if data.active_tests.size > 0 %}
+  <div class="table-wrapper">
+    <table class="dashboard-table dashboard-table--preview roadmap-tests-table">
+      <thead>
+        <tr>
+          <th>Teste</th>
+          <th>Main</th>
+          <th>IHM</th>
+        </tr>
+      </thead>
+      {% for t in data.active_tests %}
+      <tbody class="version-row-group">
+        <tr class="version-row" tabindex="0" aria-expanded="false">
+          <td>
+            <strong class="version-link">{{ t.name }}</strong>
+            <button type="button" class="preview-toggle" aria-label="Mostrar detalhes de {{ t.name }}" aria-expanded="false">
+              <span aria-hidden="true">ℹ</span>
+            </button>
+          </td>
+          <td>
+            {% for v in t.main %}{{ v }}{% unless forloop.last %}<br>{% endunless %}{% endfor %}
+          </td>
+          <td>
+            {% for v in t.ihm %}{{ v }}{% unless forloop.last %}<br>{% endunless %}{% endfor %}
+          </td>
+        </tr>
+        <tr class="version-preview-row">
+          <td colspan="3">
+            <div class="version-preview-card">
+              <div class="version-preview-compat">
+                <dl class="preview-compat">
+                  <div>
+                    <dt>Início</dt>
+                    <dd>{% if t.started_at %}{{ t.started_at | date: "%Y-%m-%d" }}{% else %}—{% endif %}</dd>
+                  </div>
+                  <div>
+                    <dt>Previsão de fim</dt>
+                    <dd>{% if t.expected_end %}{{ t.expected_end | date: "%Y-%m-%d" }}{% else %}—{% endif %}</dd>
+                  </div>
+                  <div>
+                    <dt>Versão alvo</dt>
+                    <dd>{% if t.target_version and t.target_version != "" %}{{ t.target_version }}{% else %}—{% endif %}</dd>
+                  </div>
+                </dl>
+              </div>
+              {% if t.notes and t.notes != "" %}
+              <p class="version-preview-summary">{{ t.notes }}</p>
+              {% else %}
+              <p class="version-preview-date muted">Sem notas.</p>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      {% endfor %}
+    </table>
+  </div>
+  {% else %}
+  <p class="muted">Nenhum teste em andamento no momento.</p>
+  {% endif %}
+</section>
+
+<section class="roadmap-section">
+  <h2>Testes finalizados</h2>
+  <p class="dashboard-hint muted">Testes encerrados — a operação pode retirar essas versões da rua. Passe o mouse sobre um teste para ver datas, versão alvo e notas. No celular, toque na linha para expandir.</p>
+
+  {% if data.finished_tests.size > 0 %}
+  <div class="table-wrapper">
+    <table class="dashboard-table dashboard-table--preview roadmap-tests-table">
+      <thead>
+        <tr>
+          <th>Teste</th>
+          <th>Main</th>
+          <th>IHM</th>
+        </tr>
+      </thead>
+      {% for t in data.finished_tests %}
+      <tbody class="version-row-group">
+        <tr class="version-row" tabindex="0" aria-expanded="false">
+          <td>
+            <strong class="version-link">{{ t.name }}</strong>
+            <button type="button" class="preview-toggle" aria-label="Mostrar detalhes de {{ t.name }}" aria-expanded="false">
+              <span aria-hidden="true">ℹ</span>
+            </button>
+          </td>
+          <td>
+            {% for v in t.main %}{{ v }}{% unless forloop.last %}<br>{% endunless %}{% endfor %}
+          </td>
+          <td>
+            {% for v in t.ihm %}{{ v }}{% unless forloop.last %}<br>{% endunless %}{% endfor %}
+          </td>
+        </tr>
+        <tr class="version-preview-row">
+          <td colspan="3">
+            <div class="version-preview-card">
+              <div class="version-preview-compat">
+                <dl class="preview-compat">
+                  <div>
+                    <dt>Início</dt>
+                    <dd>{% if t.started_at %}{{ t.started_at | date: "%Y-%m-%d" }}{% else %}—{% endif %}</dd>
+                  </div>
+                  <div>
+                    <dt>Finalizado em</dt>
+                    <dd>{% if t.finished_at %}{{ t.finished_at | date: "%Y-%m-%d" }}{% else %}—{% endif %}</dd>
+                  </div>
+                  <div>
+                    <dt>Versão alvo</dt>
+                    <dd>{% if t.target_version and t.target_version != "" %}{{ t.target_version }}{% else %}—{% endif %}</dd>
+                  </div>
+                </dl>
+              </div>
+              {% if t.notes and t.notes != "" %}
+              <p class="version-preview-summary">{{ t.notes }}</p>
+              {% else %}
+              <p class="version-preview-date muted">Operação pode remover da rua.</p>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      {% endfor %}
+    </table>
+  </div>
+  {% else %}
+  <p class="muted">Nenhum teste finalizado registrado ainda.</p>
+  {% endif %}
+</section>
+
+<script>
+(function () {
+  var rows = document.querySelectorAll('.dashboard-table--preview .version-row');
+  var touchMode = window.matchMedia('(hover: none)').matches;
+
+  function closeAll(except) {
+    rows.forEach(function (row) {
+      if (row === except) return;
+      var preview = row.nextElementSibling;
+      if (preview && preview.classList.contains('version-preview-row')) {
+        preview.classList.remove('is-expanded');
+        row.setAttribute('aria-expanded', 'false');
+        var btn = row.querySelector('.preview-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  function togglePreview(row) {
+    var preview = row.nextElementSibling;
+    if (!preview || !preview.classList.contains('version-preview-row')) return;
+    var open = !preview.classList.contains('is-expanded');
+    closeAll(open ? row : null);
+    preview.classList.toggle('is-expanded', open);
+    row.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var btn = row.querySelector('.preview-toggle');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  rows.forEach(function (row) {
+    var toggle = row.querySelector('.preview-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        togglePreview(row);
+      });
+    }
+    if (touchMode) {
+      row.addEventListener('click', function (e) {
+        if (e.target.closest('.preview-toggle')) return;
+        togglePreview(row);
+      });
+    }
+    row.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        togglePreview(row);
+      }
+    });
+  });
+})();
+</script>
