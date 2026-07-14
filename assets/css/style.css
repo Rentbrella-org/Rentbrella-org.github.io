@@ -776,3 +776,14 @@ h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; }
   color: var(--rb-teal);
 }
 
+/* Mermaid diagrams */
+.mermaid {
+  margin: 1.25rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid var(--rb-gray-200);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
