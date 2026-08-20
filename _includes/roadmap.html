@@ -3,63 +3,68 @@
 {% assign fresh_window = 1209600 %}
 
 <section class="roadmap-section">
-  <h2>Versões seguintes</h2>
-  <p class="dashboard-hint muted">Passe o mouse sobre uma versão para ver o resumo e o previsto. No celular, toque na linha para expandir. Datas são previsões — “Atualizado em” mostra quando a previsão foi revisada.</p>
+  <h2>Lançamentos por semestre</h2>
+  <p class="dashboard-hint muted">Passe o mouse sobre um semestre para ver o resumo e o previsto. No celular, toque na linha para expandir. Datas de semestres futuros são previsões — “Atualizado em” mostra quando a previsão foi revisada.</p>
 
   <div class="table-wrapper">
-    <table class="dashboard-table dashboard-table--preview roadmap-versions-table">
+    <table class="dashboard-table dashboard-table--preview roadmap-releases-table">
       <thead>
         <tr>
-          <th>Nome</th>
+          <th>Semestre</th>
+          <th>Versão</th>
           <th>Status</th>
-          <th>Previsão de lançamento</th>
+          <th>Lançamento</th>
           <th>Atualizado em</th>
         </tr>
       </thead>
-      {% for v in data.versions %}
-      {% assign status_label = v.status | replace: "_", " " | capitalize %}
-      {% if v.status == "planejada" %}
+      {% for r in data.releases %}
+      {% assign period_label = r.semester | append: "º semestre de " | append: r.year %}
+      {% assign status_label = r.status | replace: "_", " " | capitalize %}
+      {% if r.status == "planejada" %}
         {% assign status_label = "Planejada" %}
-      {% elsif v.status == "conceito" %}
+      {% elsif r.status == "conceito" %}
         {% assign status_label = "Conceito" %}
-      {% elsif v.status == "desenvolvimento" %}
+      {% elsif r.status == "desenvolvimento" %}
         {% assign status_label = "Em desenvolvimento" %}
-      {% elsif v.status == "teste" %}
+      {% elsif r.status == "teste" %}
         {% assign status_label = "Em teste" %}
+      {% elsif r.status == "lancado" %}
+        {% assign status_label = "Lançado" %}
       {% endif %}
       <tbody class="version-row-group">
-        <tr class="version-row status-row status-{{ v.status }}" tabindex="0" aria-expanded="false">
+        <tr class="version-row status-row status-{{ r.status }}" tabindex="0" aria-expanded="false">
           <td>
-            <strong class="version-link">{{ v.name }}</strong>
-            <button type="button" class="preview-toggle" aria-label="Mostrar resumo da {{ v.name }}" aria-expanded="false">
+            <strong class="version-link">{{ period_label }}</strong>
+            <button type="button" class="preview-toggle" aria-label="Mostrar resumo do {{ period_label }}" aria-expanded="false">
               <span aria-hidden="true">ℹ</span>
             </button>
           </td>
-          <td><span class="badge badge-{{ v.status }}">{{ status_label }}</span></td>
-          <td>{% if v.expected_release %}{{ v.expected_release | date: "%Y-%m-%d" }}{% else %}—{% endif %}</td>
+          <td>{% if r.version and r.version != "" %}{{ r.version }}{% else %}—{% endif %}</td>
+          <td><span class="badge badge-{{ r.status }}">{{ status_label }}</span></td>
+          <td>{% if r.expected_release %}{{ r.expected_release | date: "%Y-%m-%d" }}{% else %}—{% endif %}</td>
           <td>
-            {% if v.date_updated_at %}
-              {% assign updated_s = v.date_updated_at | date: "%s" | plus: 0 %}
+            {% if r.date_updated_at %}
+              {% assign updated_s = r.date_updated_at | date: "%s" | plus: 0 %}
               {% assign age = now_s | minus: updated_s %}
-              <span{% if age <= fresh_window %} class="date-fresh"{% endif %}>{{ v.date_updated_at | date: "%Y-%m-%d" }}</span>
+              <span{% if age <= fresh_window %} class="date-fresh"{% endif %}>{{ r.date_updated_at | date: "%Y-%m-%d" }}</span>
             {% else %}
               —
             {% endif %}
           </td>
         </tr>
         <tr class="version-preview-row">
-          <td colspan="4">
+          <td colspan="5">
             <div class="version-preview-card">
-              {% if v.summary and v.summary != "" %}
-              <p class="version-preview-summary">{{ v.summary }}</p>
+              {% if r.summary and r.summary != "" %}
+              <p class="version-preview-summary">{{ r.summary }}</p>
               {% else %}
               <p class="version-preview-summary muted">Sem resumo ainda.</p>
               {% endif %}
-              {% if v.planned_features and v.planned_features.size > 0 %}
+              {% if r.planned_features and r.planned_features.size > 0 %}
               <div class="version-preview-compat">
-                <strong>Funcionalidades planejadas</strong>
+                <strong>{% if r.status == "lancado" %}Funcionalidades entregues{% else %}Funcionalidades planejadas{% endif %}</strong>
                 <ul class="roadmap-features">
-                  {% for feature in v.planned_features %}
+                  {% for feature in r.planned_features %}
                   <li>{{ feature }}</li>
                   {% endfor %}
                 </ul>
@@ -78,7 +83,7 @@
 
 <section class="roadmap-section">
   <h2>Testes em andamento</h2>
-  <p class="dashboard-hint muted">Conjuntos Main + IHM sob validação. Passe o mouse sobre um teste para ver datas, versão alvo e notas. No celular, toque na linha para expandir.</p>
+  <p class="dashboard-hint muted">Conjuntos Main + IHM sob validação. Passe o mouse sobre um teste para ver datas, lançamento alvo e notas. No celular, toque na linha para expandir.</p>
 
   {% if data.active_tests.size > 0 %}
   <div class="table-wrapper">
@@ -120,8 +125,8 @@
                     <dd>{% if t.expected_end %}{{ t.expected_end | date: "%Y-%m-%d" }}{% else %}—{% endif %}</dd>
                   </div>
                   <div>
-                    <dt>Versão alvo</dt>
-                    <dd>{% if t.target_version and t.target_version != "" %}{{ t.target_version }}{% else %}—{% endif %}</dd>
+                    <dt>Lançamento alvo</dt>
+                    <dd>{% if t.target_release and t.target_release != "" %}{{ t.target_release }}{% else %}—{% endif %}</dd>
                   </div>
                 </dl>
               </div>
@@ -144,7 +149,7 @@
 
 <section class="roadmap-section">
   <h2>Testes finalizados</h2>
-  <p class="dashboard-hint muted">Testes encerrados — a operação pode retirar essas versões da rua. Passe o mouse sobre um teste para ver datas, versão alvo e notas. No celular, toque na linha para expandir.</p>
+  <p class="dashboard-hint muted">Testes encerrados — a operação pode retirar essas versões da rua. Passe o mouse sobre um teste para ver datas, lançamento alvo e notas. No celular, toque na linha para expandir.</p>
 
   {% if data.finished_tests.size > 0 %}
   <div class="table-wrapper">
@@ -186,8 +191,8 @@
                     <dd>{% if t.finished_at %}{{ t.finished_at | date: "%Y-%m-%d" }}{% else %}—{% endif %}</dd>
                   </div>
                   <div>
-                    <dt>Versão alvo</dt>
-                    <dd>{% if t.target_version and t.target_version != "" %}{{ t.target_version }}{% else %}—{% endif %}</dd>
+                    <dt>Lançamento alvo</dt>
+                    <dd>{% if t.target_release and t.target_release != "" %}{{ t.target_release }}{% else %}—{% endif %}</dd>
                   </div>
                 </dl>
               </div>

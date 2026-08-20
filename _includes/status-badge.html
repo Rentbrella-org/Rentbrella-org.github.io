@@ -12,6 +12,7 @@
 {% when 'conceito' %}{% assign label = 'Conceito' %}
 {% when 'desenvolvimento' %}{% assign label = 'Em desenvolvimento' %}
 {% when 'teste' %}{% assign label = 'Em teste' %}
+{% when 'lancado' %}{% assign label = 'Lançado' %}
 {% else %}{% assign label = include.status %}
 {% endcase %}
-<span class="badge badge-{{ include.status }}">{{ label }}</span>
+<span class="badge badge-{{ include.status }}">{{ label }}</span>{% if include.low_risk %} <span class="badge badge-low-risk">Risco baixo</span>{% endif %}

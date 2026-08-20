@@ -13,19 +13,22 @@ layout: default
 {% when 'test' %}{% assign status_label = 'Teste' %}
 {% else %}{% assign status_label = page.status | capitalize %}
 {% endcase %}
-<section class="update-banner update-banner--{{ page.status }}">
+<section class="update-banner update-banner--{{ page.status }}{% if page.low_risk %} update-banner--low-risk{% endif %}">
   <p class="update-banner__label">Status</p>
-  <p class="update-banner__status">{{ status_label }}</p>
+  <p class="update-banner__status">{{ status_label }}{% if page.low_risk %} <span class="update-banner__qualifier">— risco baixo</span>{% endif %}</p>
   {% assign summary = page.summary | strip %}
   {% if summary.size > 0 %}
   <p class="update-banner__detail">{{ summary }}</p>
+  {% endif %}
+  {% if page.low_risk %}
+  <p class="update-banner__note">Saiu do ciclo operacional porque existe uma versão mais nova, não por falha grave. Era uma versão estável e os problemas conhecidos dela são de risco baixo, então voltar para ela é aceitável se o cenário da máquina exigir.</p>
   {% endif %}
 </section>
 
 <header class="version-header">
   <h1>{{ page.product_name }} — {{ page.version }}</h1>
   <div class="version-meta">
-    {% include status-badge.html status=page.status %}
+    {% include status-badge.html status=page.status low_risk=page.low_risk %}
     {% include impact-badge.html impact=page.impact %}
     <span class="meta-item">Lançamento: {{ page.released_at | date: "%d/%m/%Y" }}</span>
     {% if page.discontinued_at %}
@@ -72,6 +75,17 @@ layout: default
   </div>
 </section>
 {% endunless %}
+
+{% if page.low_risk and page.recommended_for.size > 0 %}
+<section class="version-section">
+  <h2>Quando faz sentido voltar para ela</h2>
+  <ul>
+    {% for item in page.recommended_for %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
 
 <section class="version-section compat-flags">
   <h2>Compatibilidade operacional</h2>

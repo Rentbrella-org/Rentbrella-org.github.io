@@ -15,6 +15,8 @@ description: Consulta informativa das versões de firmware e suas funcionalidade
   </p>
 </section>
 
+{% include download-panel.html product='all' %}
+
 <div class="product-cards">
   <a href="{{ '/fw-rb-main/' | relative_url }}" class="product-card">
     <h2>fw-rb-main — Placa principal</h2>

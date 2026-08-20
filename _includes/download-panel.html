@@ -1,0 +1,77 @@
+{% comment %}
+  Painel de download dos arquivos de atualização.
+  Parâmetros:
+    - product: "fw_rb_main", "ihm" ou "all" (padrão: "all")
+    - title: título da seção (padrão: "Baixar a versão mais atual")
+    - anchor: id da seção (padrão: "downloads")
+{% endcomment %}
+
+{% assign dl_product = include.product | default: 'all' %}
+{% if dl_product == 'all' %}
+  {% assign dl_groups = 'fw_rb_main,ihm' | split: ',' %}
+{% else %}
+  {% assign dl_groups = dl_product | split: ',' %}
+{% endif %}
+
+<section class="downloads" id="{{ include.anchor | default: 'downloads' }}">
+  <div class="downloads__head">
+    <h2 class="downloads__title">{{ include.title | default: 'Baixar a versão mais atual' }}</h2>
+    {% case dl_product %}
+    {% when 'fw_rb_main' %}
+      {% assign dl_hint = 'Um único firmware serve para todos os modelos de máquina, mas em dois formatos: o <strong>.dfu</strong> é do time de operação e o <strong>.bin</strong> é do time de produção — cada time instala de um jeito diferente. Os links abrem a pasta do Google Drive.' %}
+    {% when 'ihm' %}
+      {% assign dl_hint = 'Cada modelo de tela precisa do seu próprio arquivo. Os links abrem a pasta do Google Drive.' %}
+    {% else %}
+      {% assign dl_hint = 'Escolha o produto e o modelo para baixar o arquivo mais recente. Os links abrem a pasta do Google Drive.' %}
+    {% endcase %}
+    <p class="downloads__hint muted">{{ include.hint | default: dl_hint }}</p>
+  </div>
+
+  {% for dl_group in dl_groups %}
+    {% if dl_group == 'fw_rb_main' %}
+      {% assign dl_items = site.data.downloads.fw_rb_main %}
+      {% assign dl_versions = site.fw_rb_main_versions %}
+      {% assign dl_group_title = 'fw-rb-main — Placa principal' %}
+      {% assign dl_group_url = '/fw-rb-main/' %}
+    {% else %}
+      {% assign dl_items = site.data.downloads.ihm %}
+      {% assign dl_versions = site.ihm_versions %}
+      {% assign dl_group_title = 'IHM — Tela de interface' %}
+      {% assign dl_group_url = '/ihm/' %}
+    {% endif %}
+    {% assign dl_rec = dl_versions | sort: 'released_at' | reverse | where: 'status', 'recomendada' | first %}
+
+    <div class="downloads-group">
+      {% if dl_product == 'all' %}
+      <div class="downloads-group__head">
+        <span class="downloads-group__name">{{ dl_group_title }}</span>
+        {% if dl_rec %}
+        <a class="downloads-group__version" href="{{ dl_rec.url | relative_url }}">{{ dl_rec.version }}</a>
+        {% endif %}
+      </div>
+      {% endif %}
+      <div class="download-cards{% if dl_items.size == 1 %} download-cards--single{% endif %}">
+        {% for dl_item in dl_items %}
+        <a class="download-card" href="{{ dl_item.url }}" target="_blank" rel="noopener">
+          <span class="download-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img"><path d="M12 3a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 0 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1zM5 18h14a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2z"/></svg>
+          </span>
+          <span class="download-card__text">
+            <span class="download-card__label">
+              {{ dl_item.label }}
+              {% if dl_item.audience %}
+              <span class="download-card__tag download-card__tag--{{ dl_item.audience_key | default: 'neutro' }}">{{ dl_item.audience }}</span>
+              {% endif %}
+            </span>
+            {% if dl_item.note %}<span class="download-card__note">{{ dl_item.note }}</span>{% endif %}
+          </span>
+          <span class="download-card__arrow" aria-hidden="true">→</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% if dl_product == 'all' %}
+      <a class="downloads-group__link" href="{{ dl_group_url | relative_url }}">Ver todas as versões e detalhes →</a>
+      {% endif %}
+    </div>
+  {% endfor %}
+</section>

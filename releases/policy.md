@@ -15,6 +15,7 @@ Este portal traduz as releases técnicas em **contexto operacional**: o estado d
 flowchart LR
     lancamento[Lançamento] --> recomendada[Recomendada]
     recomendada --> estavel[Estável]
+    estavel --> riscoBaixo[Descontinuada - risco baixo]
     estavel --> descontinuada[Descontinuada]
     recomendada --> problemaCritico[Problema crítico]
     estavel --> problemaCritico
@@ -46,6 +47,10 @@ Cada status descreve o **estado atual** da versão. A decisão de instalar, mant
       <td>{% include status-badge.html status='descontinuada' %}</td>
       <td>Versão fora do ciclo operacional: não recebe mais suporte ativo e não faz parte do conjunto indicado para o parque atual.</td>
     </tr>
+    <tr>
+      <td>{% include status-badge.html status='descontinuada' low_risk=true %}</td>
+      <td><strong>Sub-categoria de Descontinuada.</strong> Saiu do ciclo porque existe uma versão mais nova, não por falha grave: era uma versão estável e os problemas conhecidos dela são de risco baixo. Não faz parte do conjunto indicado para o parque atual, mas voltar para ela é aceitável se o cenário da máquina exigir. Confira a seção “Bugs conhecidos” da versão antes de decidir.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -55,18 +60,19 @@ Cada status descreve o **estado atual** da versão. A decisão de instalar, mant
 2. **Estável** — sem problema conhecido específico dela; já há uma referência mais nova, ou só é útil para um modelo, tipo de máquina ou cliente específico.
 3. **Danificada** — problema crítico conhecido; risco operacional nessa versão.
 4. **Descontinuada** — fora de suporte e fora do conjunto indicado para o parque.
+5. **Descontinuada + Risco baixo** — fora do conjunto indicado, mas saiu por existir uma mais nova e não por falha grave; é aceitável voltar para ela.
 
 ## Status do roadmap (aba Futuro)
 
-Nomes de versões ainda não lançadas ficam em [Futuro]({{ '/releases/futuro/' | relative_url }}). Quando a versão é lançada, ela **sai do roadmap** e passa a aparecer nas páginas de versões (Main / IHM) com um status operacional (`recomendada`, `estavel`, etc.).
+O firmware é planejado em **lançamentos semestrais**: cada semestre concentra um conjunto de features e resulta em uma versão. Os semestres ficam em [Futuro]({{ '/releases/futuro/' | relative_url }}). Quando o semestre é lançado, ele passa a `Lançado` com o número da versão, e essa versão aparece nas páginas de versões (Main / IHM) com um status operacional (`recomendada`, `estavel`, etc.).
 
 ```mermaid
 flowchart LR
     planejada[Planejada] --> conceito[Conceito]
     conceito --> desenvolvimento[Em desenvolvimento]
     desenvolvimento --> teste[Em teste]
-    teste --> lancamento[Lançamento]
-    lancamento --> versoes[Pagina de versoes]
+    teste --> lancado[Lançado]
+    lancado --> versoes[Pagina de versoes]
 ```
 
 <table class="definitions-table">
@@ -76,30 +82,34 @@ flowchart LR
   <tbody>
     <tr>
       <td>{% include status-badge.html status='planejada' %}</td>
-      <td>Nome reservado no roadmap. Ainda não há escopo nem data firme — não espere essa versão em campo.</td>
+      <td>Semestre reservado no roadmap. Ainda não há escopo nem data firme — não espere nada em campo nesse período.</td>
     </tr>
     <tr>
       <td>{% include status-badge.html status='conceito' %}</td>
-      <td>Engenharia está definindo o que entra na versão (ideias e escopo). Nada para instalar; mudanças de plano são esperadas.</td>
+      <td>Engenharia está definindo o que entra no semestre (ideias e escopo). Nada para instalar; mudanças de plano são esperadas.</td>
     </tr>
     <tr>
       <td>{% include status-badge.html status='desenvolvimento' %}</td>
-      <td>Features sendo implementadas. Pode haver builds internos, mas não é versão de teste em campo nem de produção.</td>
+      <td>Features do semestre sendo implementadas. Pode haver builds internos, mas não é versão de teste em campo nem de produção.</td>
     </tr>
     <tr>
       <td>{% include status-badge.html status='teste' %}</td>
       <td>Conjunto sob validação (lab ou campo). Consulte a seção “Testes em andamento” no Futuro. Só a engenharia libera o uso; ao encerrar o teste, a operação pode ser orientada a retirar essas builds da rua.</td>
+    </tr>
+    <tr>
+      <td>{% include status-badge.html status='lancado' %}</td>
+      <td>O semestre foi fechado e a versão saiu. Consulte a página da versão (Main / IHM) para status operacional, impacto e compatibilidade.</td>
     </tr>
   </tbody>
 </table>
 
 ### Resumo rápido (roadmap)
 
-1. **Planejada** — nome reservado; sem trabalho ativo.
+1. **Planejada** — semestre reservado; sem trabalho ativo.
 2. **Conceito** — escopo em definição.
 3. **Em desenvolvimento** — implementação em andamento.
 4. **Em teste** — validação; acompanhe datas e conjuntos na aba Futuro.
-5. **Ao lançar** — some do Futuro e entra na lista oficial de versões.
+5. **Lançado** — versão definida e publicada na lista oficial de versões.
 
 ## Níveis de impacto da atualização
 
@@ -130,7 +140,8 @@ flowchart LR
 ## Regras de negócio
 
 - **Status descreve estado, não ordem** — o portal informa o contexto da versão; a operação decide com base nisso e no cenário da máquina.
+- **Descontinuada não é sinônimo de risco alto** — o selo `Risco baixo` separa a versão que saiu do ciclo por ter uma sucessora da versão que saiu sem essa garantia. Só a primeira é candidata a retorno, e mesmo nela vale ler os bugs conhecidos antes.
 - **O portal informa, não decide** — o banner e o status descrevem o estado da versão; a operação decide no cenário de cada máquina.
 - **Compatibilidade cruzada Main ↔ IHM** — consulte a [tabela de compatibilidade]({{ '/releases/compatibility/' | relative_url }}) antes de combinar versões da placa e da tela.
-- **Roadmap ≠ produção** — nomes em [Futuro]({{ '/releases/futuro/' | relative_url }}) não são versões instaláveis; só entram no parque após o lançamento nas páginas de versões.
+- **Roadmap ≠ produção** — semestres em [Futuro]({{ '/releases/futuro/' | relative_url }}) não são versões instaláveis; só entram no parque após o lançamento nas páginas de versões.
 - **Conteúdo preliminar** — alguns campos podem estar provisórios até validação pela equipe; em caso de dúvida, confirme com a engenharia.

@@ -12,7 +12,7 @@
   {% assign versions = site.ihm_versions %}
 {% endif %}
 
-{% assign rec = versions | where: "status", "recomendada" | first %}
+{% assign rec = versions | sort: "released_at" | reverse | where: "status", "recomendada" | first %}
 {% if rec %}
 <span class="{{ include.class | default: 'recommended' }}">{{ include.label | default: 'Versão recomendada' }}: {{ rec.version }}</span>
 {% endif %}
