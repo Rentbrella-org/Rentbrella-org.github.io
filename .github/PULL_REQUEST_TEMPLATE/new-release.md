@@ -13,8 +13,10 @@ Use este checklist ao adicionar ou atualizar uma versão de firmware (fw-rb-main
 
 ### Versão anterior
 
-- [ ] Status da versão anterior atualizado (ex.: `recomendada` → `estavel`)
+- [ ] Status da versão anterior atualizado (ex.: `recomendada` → `descontinuada`)
 - [ ] Se a versão anterior ficou `descontinuada`, preencher `discontinued_at`
+- [ ] Se ela não tinha problema grave, marcar `low_risk: true` para sinalizar que voltar para ela é aceitável
+- [ ] Bugs conhecidos toleráveis registrados em `known_issues` (não em `not_required_for`, que não aparece em descontinuadas)
 - [ ] Campo `replaces` aponta para a versão imediatamente anterior, se relevante
 
 ### Compatibilidade

@@ -4,9 +4,14 @@
 # Fontes: main_compat_* em _ihm_versions/ e ihm_compat_* em _fw_rb_main_versions/
 
 rules:
+
+  - ihm: "v3.4.0"
+    main_min: "v2.28.0-1"
+    main_max: null
+
   - ihm: "v3.2.1"
     main_min: "v2.25.2-1"
-    main_max: null
+    main_max: "v2.25.2-1"
 
   - ihm: "v3.0.0"
     main_min: "v2.22.0-1"
@@ -41,6 +46,6 @@ rules:
     main_max: "v2.11.4-1"
 
 recommended_pairs:
-  - main: "aurora"
-    ihm: "v3.2.1-1"
-    note: "Par recomendado hoje para novas máquinas."
+  - main: "v2.28.0-1"
+    ihm: "v3.4.0-1"
+    note: "Par recomendado hoje para novas máquinas e única versão funcional para máquinas modelo RB-08."

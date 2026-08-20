@@ -1,187 +1,68 @@
-# Roadmap de versões nomeadas e conjuntos em teste.
-# Status: planejada | conceito | desenvolvimento | teste
-# Ao lançar uma versão: remova-a daqui e crie a página em _fw_rb_main_versions/ (ou IHM).
+# Roadmap de lançamentos por semestre e conjuntos em teste.
+# Cada item de `releases` é um semestre de lançamento (year + semester).
+# `version` fica null até a versão do semestre ser definida.
+# Status: planejada | conceito | desenvolvimento | teste | lancado
+# Em `lancado`, expected_release é a data real de lançamento.
 # Ao mudar expected_release, atualize também date_updated_at (YYYY-MM-DD).
 # Ao concluir um teste: mova de active_tests para finished_tests e preencha finished_at.
-# Nomes (versões e testes) sempre em minúsculo.
+# Nomes de testes sempre em minúsculo.
 
-versions:
-  - name: "brisa"
-    status: desenvolvimento
-    expected_release: 2026-08-10
-    date_updated_at: 2026-07-14
-    summary: "Suporte ao modelo RB-08 e melhorias na experiência do usuário no início da máquina."
+releases:
+  - year: 2026
+    semester: 1
+    version: "v2.28.0-1"
+    status: lancado
+    expected_release: 2026-08-19
+    date_updated_at: 2026-08-19
+    summary: "Suporte ao modelo RB-08, melhorias na experiência do usuário no início da máquina e estabilidade de sensores."
     planned_features:
       - "Suporte ao modelo de máquina RB-08"
       - "Melhorias na experiência do usuário no início da máquina"
       - "Código para fluxo de matrícula acessar tela de QRCode"
       - "Ajuste na leitura de sensores ao detectar possível curto"
 
-  - name: "bruma"
+  - year: 2026
+    semester: 2
+    version: null
     status: conceito
     expected_release: null
-    date_updated_at: 2026-07-14
+    date_updated_at: 2026-08-20
     summary: "Nova forma da máquina responder a problemas de hardware."
     planned_features:
       - "Remoção da tela de erro 21"
       - "Telemetria offline via QR Code"
       - "Configuração de máquinas RB-03 com placas LED"
 
-  - name: "chuvisco"
+  - year: 2027
+    semester: 1
+    version: null
     status: planejada
     expected_release: null
     date_updated_at: null
     summary: ""
     planned_features: []
 
-  - name: "dilúvio"
+  - year: 2027
+    semester: 2
+    version: null
     status: planejada
     expected_release: null
     date_updated_at: null
     summary: ""
     planned_features: []
 
-  - name: "estiagem"
+  - year: 2028
+    semester: 1
+    version: null
     status: planejada
     expected_release: null
     date_updated_at: null
     summary: ""
     planned_features: []
 
-  - name: "frente fria"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "garoa"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "geada"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "granizo"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "inverno"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "monção"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "neblina"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "nimbo"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "outono"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "orvalho"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "primavera"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "raio"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "rajada"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "relâmpago"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "sereno"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "temporal"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "trovoada"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "vendaval"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "ventania"
-    status: planejada
-    expected_release: null
-    date_updated_at: null
-    summary: ""
-    planned_features: []
-
-  - name: "verão"
+  - year: 2028
+    semester: 2
+    version: null
     status: planejada
     expected_release: null
     date_updated_at: null
@@ -189,16 +70,6 @@ versions:
     planned_features: []
 
 active_tests:
-  - name: "funcionalidade dos slots com ux melhorada"
-    main:
-      - "v2.27.7-1"
-    ihm:
-      - "v3.2.1-1"
-    started_at: 2026-07-01
-    expected_end: 2026-07-31
-    notes: ""
-    target_version: "brisa"
-
   - name: "telemetria offline via qr code"
     main:
       - "v2.27.5-1"
@@ -207,17 +78,17 @@ active_tests:
     started_at: 2026-07-01
     expected_end: 2026-07-31
     notes: ""
-    target_version: "bruma"
-
-  - name: "código para fluxo de matrícula acessar tela de qr code"
+    target_release: "2026-S2"
+  
+  - name: "placas led para máquinas rb-03"
     main:
-      - "eng"
+      - "v2.27.5-1-lb-rb03"
     ihm:
       - "v3.2.1-1"
     started_at: null
-    expected_end: null
-    notes: ""
-    target_version: "brisa"
+    expected_end: 2026-07-31
+    notes: "Esse teste não foi para a versão 2.28.0-1, mas é recomendado para máquinas modelo RB-03 com placas LED."
+    target_release: "2026-S2"
 
 finished_tests:
   - name: "funcionalidade dos slots"
@@ -233,14 +104,26 @@ finished_tests:
     started_at: 2026-03-12
     finished_at: 2026-06-30
     notes: ""
-    target_version: "aurora"
+    target_release: "v2.28.0-1"
 
-  - name: "Placas LED para máquinas RB-03"
+  - name: "funcionalidade dos slots com ux melhorada"
+    main:
+      - "v2.27.7-1"
+    ihm:
+      - "v3.2.1-1"
+    started_at: 2026-07-01
+    finished_at: 2026-08-19
+    notes: ""
+    target_release: "v2.28.0-1"
+
+  - name: "código para fluxo de matrícula acessar tela de qr code"
     main:
       - "eng"
     ihm:
       - "v3.2.1-1"
     started_at: null
-    finished_at: null
+    finished_at: 2026-08-19
     notes: ""
-    target_version: "v2.27.5-1-lb-rb03"
+    target_release: "v2.28.0-1"
+
+

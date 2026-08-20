@@ -24,6 +24,10 @@ layout: default
 </section>
 {% endif %}
 
+{% if page.product == 'fw_rb_main' or page.product == 'ihm' %}
+{% include download-panel.html product=page.product title='Baixar os arquivos de atualização' %}
+{% endif %}
+
 <section class="dashboard-section">
   <h2>Todas as versões</h2>
   <p class="dashboard-hint muted">Passe o mouse sobre uma versão para ver o resumo. No celular, toque na linha para expandir.</p>
@@ -45,7 +49,7 @@ layout: default
               <span aria-hidden="true">ℹ</span>
             </button>
           </td>
-          <td>{% include status-badge.html status=v.status %}</td>
+          <td>{% include status-badge.html status=v.status low_risk=v.low_risk %}</td>
           <td>{% include impact-badge.html impact=v.impact %}</td>
         </tr>
         <tr class="version-preview-row">

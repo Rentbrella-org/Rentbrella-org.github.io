@@ -1,0 +1,28 @@
+# Links de download dos arquivos de atualização (pastas do Google Drive).
+# Para trocar um link, edite apenas o campo "url" do item correspondente.
+
+fw_rb_main:
+  - label: "Arquivo .dfu"
+    note: "Serve para RB-03 a RB-08"
+    audience: "Time de operação"
+    audience_key: operacao
+    url: "https://drive.google.com/uc?export=download&id=1jCJfNAuyZCl0v_87LqSKxx8AEQFutFOj"
+  - label: "Arquivo .bin"
+    note: "Serve para RB-03 a RB-08"
+    audience: "Time de produção"
+    audience_key: producao
+    url: "https://drive.google.com/uc?export=download&id=1Rtx4peFKLejZyekAESNbZ09PLe9TtcNS"
+
+ihm:
+  - label: "DWIN 7\""
+    note: "800×480 — atual"
+    url: "https://drive.google.com/uc?export=download&id=1Rtx4peFKLejZyekAESNbZ09PLe9TtcNS"
+  - label: "Proculus 7\" — verde"
+    note: "800×480 — legado"
+    url: "https://drive.google.com/uc?export=download&id=1MTr0Ta60kbV_p0TpgEmOKB0LrSBSAoVx"
+  - label: "Proculus 10\" — verde"
+    note: "1024×768 — legado"
+    url: "https://drive.google.com/uc?export=download&id=1-hcMOvLYCiZPtK9orR5p1_ltBcWHbV4u"
+  - label: "Proculus 10\" — azul"
+    note: "1024×768 — legado"
+    url: "https://drive.google.com/uc?export=download&id=1OGFUyfMB_FyDFgt2XU4uYvrTD69RcwUf"

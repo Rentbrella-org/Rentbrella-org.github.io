@@ -13,4 +13,4 @@ Hoje são suportados quatro modelos de tela:
 - Proculus 7 polegadas
 - DWIN 7 polegadas
 
-Cada modelo precisa do **seu próprio arquivo** de atualização. Os arquivos estão na [pasta do Google Drive](https://drive.google.com/drive/folders/1xRWrwXqdXbZOk_Id9GZuppbTsp5_eJ1n?zx=8424p499wpd4).
+Cada modelo precisa do **seu próprio arquivo** de atualização — use os botões de download no topo desta página. A [pasta geral do Google Drive](https://drive.google.com/drive/folders/1xRWrwXqdXbZOk_Id9GZuppbTsp5_eJ1n?zx=8424p499wpd4) reúne todos os arquivos.
