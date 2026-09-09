@@ -10,10 +10,10 @@
 releases:
   - year: 2026
     semester: 1
-    version: "v2.28.0-1"
+    version: "v2.28.1-1"
     status: lancado
-    expected_release: 2026-08-19
-    date_updated_at: 2026-08-19
+    expected_release: 2026-09-09
+    date_updated_at: 2026-09-09
     summary: "Suporte ao modelo RB-08, melhorias na experiência do usuário no início da máquina e estabilidade de sensores."
     planned_features:
       - "Suporte ao modelo de máquina RB-08"
@@ -26,12 +26,14 @@ releases:
     version: null
     status: conceito
     expected_release: null
-    date_updated_at: 2026-08-20
+    date_updated_at: 2026-09-09
     summary: "Nova forma da máquina responder a problemas de hardware."
     planned_features:
       - "Remoção da tela de erro 21"
       - "Telemetria offline via QR Code"
       - "Configuração de máquinas RB-03 com placas LED"
+      - "Melhoria no teste e instalação de máquinas com crachás"
+      - "Adição de informações de problemas de hardware nas telas de erro"
 
   - year: 2027
     semester: 1
@@ -76,7 +78,7 @@ active_tests:
     ihm:
       - "v3.3.0-1"
     started_at: 2026-07-01
-    expected_end: 2026-07-31
+    expected_end: 2026-11-01
     notes: ""
     target_release: "2026-S2"
   
@@ -104,7 +106,7 @@ finished_tests:
     started_at: 2026-03-12
     finished_at: 2026-06-30
     notes: ""
-    target_release: "v2.28.0-1"
+    target_release: "v2.28.1-1"
 
   - name: "funcionalidade dos slots com ux melhorada"
     main:
@@ -114,7 +116,7 @@ finished_tests:
     started_at: 2026-07-01
     finished_at: 2026-08-19
     notes: ""
-    target_release: "v2.28.0-1"
+    target_release: "v2.28.1-1"
 
   - name: "código para fluxo de matrícula acessar tela de qr code"
     main:
@@ -124,6 +126,6 @@ finished_tests:
     started_at: null
     finished_at: 2026-08-19
     notes: ""
-    target_release: "v2.28.0-1"
+    target_release: "v2.28.1-1"
 
 

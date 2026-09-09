@@ -5,8 +5,8 @@
 
 rules:
 
-  - ihm: "v3.4.0"
-    main_min: "v2.28.0-1"
+  - ihm: "v3.4.1"
+    main_min: "v2.28.1-1"
     main_max: null
 
   - ihm: "v3.2.1"
